@@ -67,9 +67,9 @@ public class ChessPiece {
                 addDiagonalMoves(board, myPosition, validMoves);
                 addStraightMoves(board, myPosition, validMoves);
                 break;
-//            case KNIGHT:
-//                addKnightMoves(board, myPosition, validMoves);
-//                break;
+            case KNIGHT:
+                addKnightMoves(board, myPosition, validMoves);
+                break;
 //            case KING:
 //                addKingMoves(board, myPosition, validMoves);
 //                break;
@@ -151,6 +151,37 @@ public class ChessPiece {
             }
         }
     }
+
+    private void addKnightMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> validMoves) {
+        int[][] moves = {
+                {2, 1},   // Move 2 up, 1 right
+                {2, -1},  // Move 2 up, 1 left
+                {1, 2},   // Move 1 up, 2 right
+                {1, -2},  // Move 1 up, 2 left
+                {-1, 2},  // Move 1 down, 2 right
+                {-1, -2}, // Move 1 down, 2 left
+                {-2, 1},  // Move 2 down, 1 right
+                {-2, -1}  // Move 2 down, 1 left
+        };
+
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+
+        for (int[] move : moves) {
+            int newRow = row + move[0];
+            int newCol = col + move[1];
+
+            if (newRow > 0 && newRow <= 8 && newCol > 0 && newCol <= 8) {
+                ChessPosition newPosition = new ChessPosition(newRow, newCol);
+                ChessPiece occupyingPiece = board.getPiece(newPosition);
+
+                if (occupyingPiece == null || occupyingPiece.getTeamColor() != this.getTeamColor()) {
+                    validMoves.add(new ChessMove(myPosition, newPosition, null));
+                }
+            }
+        }
+    }
+
 
 
     @Override
