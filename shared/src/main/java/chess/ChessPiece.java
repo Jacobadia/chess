@@ -45,48 +45,6 @@ public class ChessPiece {
         return this.type;
     }
 
-    /**
-     * Calculates all the positions a chess piece can move to
-     * Does not take into account moves that are illegal due to leaving the king in
-     * danger
-     *
-     * @return Collection of valid moves
-     */
-//    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-//        Collection<ChessMove> validMoves = new ArrayList<>();
-//        int[][] directions = {
-//                {1, 1},
-//                {1, -1},
-//                {-1, 1},
-//                {-1, -1}
-//        };
-//
-//        for (int[] direction : directions) {
-//            int row = myPosition.getRow();
-//            int col = myPosition.getColumn();
-//
-//            while (true) {
-//                row += direction[0];
-//                col += direction[1];
-//
-//                if (row <= 0 || row > 8 || col <= 0 || col > 8) {
-//                    break;
-//                }
-//
-//                ChessPosition newPosition = new ChessPosition(row, col);
-//                ChessPiece occupyingPiece = board.getPiece(newPosition);
-//
-//                // Add the move to valid moves
-//                validMoves.add(new ChessMove(myPosition, newPosition, null));
-//
-//                // Stop if a piece is encountered
-//                if (occupyingPiece != null) {
-//                    break;
-//                }
-//            }
-//        }
-//        return validMoves;
-//    }
 
     /**
      * Calculates all the positions a chess piece can move to
@@ -102,13 +60,13 @@ public class ChessPiece {
             case BISHOP:
                 addDiagonalMoves(board, myPosition, validMoves);
                 break;
-//            case ROOK:
-//                addStraightMoves(board, myPosition, validMoves);
-//                break;
-//            case QUEEN:
-//                addDiagonalMoves(board, myPosition, validMoves);
-//                addStraightMoves(board, myPosition, validMoves);
-//                break;
+            case ROOK:
+                addStraightMoves(board, myPosition, validMoves);
+                break;
+            case QUEEN:
+                addDiagonalMoves(board, myPosition, validMoves);
+                addStraightMoves(board, myPosition, validMoves);
+                break;
 //            case KNIGHT:
 //                addKnightMoves(board, myPosition, validMoves);
 //                break;
@@ -158,6 +116,42 @@ public class ChessPiece {
             }
         }
     }
+
+    private void addStraightMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> validMoves) {
+        int[][] directions = {
+                {1, 0},  // Up
+                {-1, 0}, // Down
+                {0, 1},  // Right
+                {0, -1}  // Left
+        };
+
+        for (int[] direction : directions) {
+            int row = myPosition.getRow();
+            int col = myPosition.getColumn();
+
+            while (true) {
+                row += direction[0];
+                col += direction[1];
+
+                // Stop if out of bounds
+                if (row <= 0 || row > 8 || col <= 0 || col > 8) {
+                    break;
+                }
+
+                ChessPosition newPosition = new ChessPosition(row, col);
+                ChessPiece occupyingPiece = board.getPiece(newPosition);
+
+                // Add the move to valid moves
+                validMoves.add(new ChessMove(myPosition, newPosition, null));
+
+                // Stop if a piece is encountered
+                if (occupyingPiece != null) {
+                    break;
+                }
+            }
+        }
+    }
+
 
     @Override
     public int hashCode() {
