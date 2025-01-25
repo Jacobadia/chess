@@ -70,9 +70,9 @@ public class ChessPiece {
             case KNIGHT:
                 addKnightMoves(board, myPosition, validMoves);
                 break;
-//            case KING:
-//                addKingMoves(board, myPosition, validMoves);
-//                break;
+            case KING:
+                addKingMoves(board, myPosition, validMoves);
+                break;
 //            case PAWN:
 //                addPawnMoves(board, myPosition, validMoves);
 //                break;
@@ -181,6 +181,37 @@ public class ChessPiece {
             }
         }
     }
+
+    private void addKingMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> validMoves) {
+        int[][] moves = {
+                {1, 0},
+                {1, 1},
+                {0, 1},
+                {-1, 1},
+                {-1, 0},
+                {-1, -1},
+                {0, -1},
+                {1, -1}
+        };
+
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+
+        for (int[] move : moves) {
+            int newRow = row + move[0];
+            int newCol = col + move[1];
+
+            if (newRow > 0 && newRow <= 8 && newCol > 0 && newCol <= 8) {
+                ChessPosition newPosition = new ChessPosition(newRow, newCol);
+                ChessPiece occupyingPiece = board.getPiece(newPosition);
+
+                if (occupyingPiece == null || occupyingPiece.getTeamColor() != this.getTeamColor()) {
+                    validMoves.add(new ChessMove(myPosition, newPosition, null));
+                }
+            }
+        }
+    }
+
 
 
 
