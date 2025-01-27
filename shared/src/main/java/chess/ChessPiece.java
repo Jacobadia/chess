@@ -237,6 +237,16 @@ public class ChessPiece {
                 }
             }
         }
+
+        // Capture moves
+        int[][] diagonalMoves = {{direction, 1}, {direction, -1}};
+        for (int[] move : diagonalMoves) {
+            ChessPosition diagonal = new ChessPosition(row + move[0], col + move[1]);
+            ChessPiece occupyingPiece = board.getPiece(diagonal);
+            if (occupyingPiece != null && occupyingPiece.getTeamColor() != this.getTeamColor()) {
+                validMoves.add(new ChessMove(myPosition, diagonal, null));
+            }
+        }
     }
 
 
