@@ -247,16 +247,22 @@ public class ChessPiece {
         // Capture moves
         int[][] diagonalMoves = {{direction, 1}, {direction, -1}};
         for (int[] move : diagonalMoves) {
-            ChessPosition diagonal = new ChessPosition(row + move[0], col + move[1]);
-            ChessPiece occupyingPiece = board.getPiece(diagonal);
-            if (occupyingPiece != null && occupyingPiece.getTeamColor() != this.getTeamColor()) {
-                if ((this.getTeamColor() == ChessGame.TeamColor.WHITE && row == 7) ||
-                        (this.getTeamColor() == ChessGame.TeamColor.BLACK && row == 2)) {
-                    validMoves.add(new ChessMove(myPosition, diagonal, PieceType.QUEEN));
-                    validMoves.add(new ChessMove(myPosition, diagonal, PieceType.ROOK));
-                    validMoves.add(new ChessMove(myPosition, diagonal, PieceType.BISHOP));
-                    validMoves.add(new ChessMove(myPosition, diagonal, PieceType.KNIGHT));
-                } else {validMoves.add(new ChessMove(myPosition, diagonal, null));}
+            int new_row = row + move[0];
+            int new_col = col + move[1];
+            if (new_col < 9 && new_col > 0 && new_row < 9 && new_row > 0) {
+                ChessPosition diagonal = new ChessPosition(new_row, new_col);
+                ChessPiece occupyingPiece = board.getPiece(diagonal);
+                if (occupyingPiece != null && occupyingPiece.getTeamColor() != this.getTeamColor()) {
+                    if ((this.getTeamColor() == ChessGame.TeamColor.WHITE && row == 7) ||
+                            (this.getTeamColor() == ChessGame.TeamColor.BLACK && row == 2)) {
+                        validMoves.add(new ChessMove(myPosition, diagonal, PieceType.QUEEN));
+                        validMoves.add(new ChessMove(myPosition, diagonal, PieceType.ROOK));
+                        validMoves.add(new ChessMove(myPosition, diagonal, PieceType.BISHOP));
+                        validMoves.add(new ChessMove(myPosition, diagonal, PieceType.KNIGHT));
+                    } else {
+                        validMoves.add(new ChessMove(myPosition, diagonal, null));
+                    }
+                }
             }
         }
     }
