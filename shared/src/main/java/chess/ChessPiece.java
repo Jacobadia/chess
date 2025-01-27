@@ -107,7 +107,9 @@ public class ChessPiece {
                 ChessPiece occupyingPiece = board.getPiece(newPosition);
 
                 // Add the move to valid moves
-                validMoves.add(new ChessMove(myPosition, newPosition, null));
+                if (occupyingPiece == null || occupyingPiece.getTeamColor() != this.getTeamColor()) {
+                    validMoves.add(new ChessMove(myPosition, newPosition, null));
+                }
 
                 // Stop if a piece is encountered
                 if (occupyingPiece != null) {
