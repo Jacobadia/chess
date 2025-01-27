@@ -73,9 +73,9 @@ public class ChessPiece {
             case KING:
                 addKingMoves(board, myPosition, validMoves);
                 break;
-//            case PAWN:
-//                addPawnMoves(board, myPosition, validMoves);
-//                break;
+            case PAWN:
+                addPawnMoves(board, myPosition, validMoves);
+                break;
         }
 
         return validMoves;
@@ -215,6 +215,30 @@ public class ChessPiece {
             }
         }
     }
+
+    private void addPawnMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> validMoves) {
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+
+        // Determine movement direction based on team color
+        int direction = (this.getTeamColor() == ChessGame.TeamColor.WHITE) ? 1 : -1;
+
+        // Forward movement by one square
+        ChessPosition forward = new ChessPosition(row + direction, col);
+        if (board.getPiece(forward) == null) {
+            validMoves.add(new ChessMove(myPosition, forward, null));
+
+            // Double forward movement on the pawn's first move
+            if ((this.getTeamColor() == ChessGame.TeamColor.WHITE && row == 2) ||
+                    (this.getTeamColor() == ChessGame.TeamColor.BLACK && row == 7)) {
+                ChessPosition doubleForward = new ChessPosition(row + 2 * direction, col);
+                if (board.getPiece(doubleForward) == null) {
+                    validMoves.add(new ChessMove(myPosition, doubleForward, null));
+                }
+            }
+        }
+    }
+
 
 
 
