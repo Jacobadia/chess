@@ -142,7 +142,9 @@ public class ChessPiece {
                 ChessPiece occupyingPiece = board.getPiece(newPosition);
 
                 // Add the move to valid moves
-                validMoves.add(new ChessMove(myPosition, newPosition, null));
+                if (occupyingPiece == null || occupyingPiece.getTeamColor() != this.getTeamColor()) {
+                    validMoves.add(new ChessMove(myPosition, newPosition, null));
+                }
 
                 // Stop if a piece is encountered
                 if (occupyingPiece != null) {
@@ -174,14 +176,6 @@ public class ChessPiece {
             if (newRow > 0 && newRow <= 8 && newCol > 0 && newCol <= 8) {
                 ChessPosition newPosition = new ChessPosition(newRow, newCol);
                 ChessPiece occupyingPiece = board.getPiece(newPosition);
-
-                System.out.println("New Position: " + newPosition);
-                System.out.println("Occupying Piece: " + occupyingPiece);
-                if (occupyingPiece != null) {
-                    System.out.println("Occupying Team Color: " + occupyingPiece.getTeamColor());
-                    System.out.println("My Team Color: " + this.getTeamColor());
-                }
-
 
                 if (occupyingPiece == null || occupyingPiece.getTeamColor() != this.getTeamColor()) {
                     validMoves.add(new ChessMove(myPosition, newPosition, null));
