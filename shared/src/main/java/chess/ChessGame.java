@@ -9,8 +9,11 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessGame {
+    private ChessBoard myBoard;
 
     public ChessGame() {
+        myBoard = new ChessBoard();
+        myBoard.resetBoard();
 
     }
 
@@ -46,7 +49,15 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        //If there is no piece at that location, this method returns null
+        ChessPiece currentPiece = myBoard.getPiece(startPosition);
+        if (currentPiece == null){
+            return null;
+        }
+
+
+        Collection<ChessMove> givenMoves = currentPiece.pieceMoves(myBoard, startPosition);
+        return null;
     }
 
     /**
