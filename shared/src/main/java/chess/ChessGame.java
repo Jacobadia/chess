@@ -65,13 +65,19 @@ public class ChessGame {
 
         //process each move
         for (ChessMove move : givenMoves) {
-            testBoard = myBoard; //shallow copy need a copy board method
-            testBoard.addPiece(move.getEndPosition(), currentPiece);
-            testBoard.addPiece(startPosition, null);
+            //test move
+            ChessPiece savedPiece = myBoard.getPiece(move.getEndPosition());
+            myBoard.addPiece(move.getEndPosition(), currentPiece);
+            myBoard.addPiece(startPosition, null);
 
+            //look for if move causes check
             if(!isInCheck(currentPiece.getTeamColor())) {
                 safeMoves.add(move);
             }
+            
+            //back to original position
+            myBoard.addPiece(move.getEndPosition(), savedPiece);
+            myBoard.addPiece(startPosition, currentPiece);
         }
         return safeMoves;
     }
