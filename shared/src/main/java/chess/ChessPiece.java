@@ -11,8 +11,8 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessPiece {
-    ChessGame.TeamColor myColor;
-    ChessPiece.PieceType myType;
+    private final ChessGame.TeamColor myColor;
+    private final ChessPiece.PieceType myType;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         myColor = pieceColor;

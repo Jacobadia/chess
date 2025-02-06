@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -10,11 +11,13 @@ import java.util.Collection;
  */
 public class ChessGame {
     private ChessBoard myBoard;
+    private ChessBoard testBoard;
 
     public ChessGame() {
         myBoard = new ChessBoard();
         myBoard.resetBoard();
 
+        testBoard = new ChessBoard();
     }
 
     /**
@@ -55,9 +58,22 @@ public class ChessGame {
             return null;
         }
 
-
+        //moves to be returned
+        Collection<ChessMove> safeMoves = new ArrayList<>();
+        //moves not processed for check
         Collection<ChessMove> givenMoves = currentPiece.pieceMoves(myBoard, startPosition);
-        return null;
+
+        //process each move
+        for (ChessMove move : givenMoves) {
+            testBoard = myBoard; //shallow copy need a copy board method
+            testBoard.addPiece(move.getEndPosition(), currentPiece);
+            testBoard.addPiece(startPosition, null);
+
+            if(!isInCheck(currentPiece.getTeamColor())) {
+                safeMoves.add(move);
+            }
+        }
+        return safeMoves;
     }
 
     /**
