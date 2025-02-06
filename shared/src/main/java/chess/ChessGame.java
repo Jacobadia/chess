@@ -11,13 +11,10 @@ import java.util.Collection;
  */
 public class ChessGame {
     private ChessBoard myBoard;
-    private ChessBoard testBoard;
 
     public ChessGame() {
         myBoard = new ChessBoard();
         myBoard.resetBoard();
-
-        testBoard = new ChessBoard();
     }
 
     /**
@@ -74,7 +71,7 @@ public class ChessGame {
             if(!isInCheck(currentPiece.getTeamColor())) {
                 safeMoves.add(move);
             }
-            
+
             //back to original position
             myBoard.addPiece(move.getEndPosition(), savedPiece);
             myBoard.addPiece(startPosition, currentPiece);
@@ -92,6 +89,25 @@ public class ChessGame {
         throw new RuntimeException("Not implemented");
     }
 
+
+    /**
+     * finds this team's king
+     * added helper function
+     */
+    private ChessPosition findMyKing(TeamColor teamColor) {
+        for (int col = 1; col < 9; col++) {
+            for (int row = 1; row < 9; row++) {
+                ChessPosition mySquare = new ChessPosition(row,col);
+                ChessPiece king = myBoard.getPiece(mySquare);
+
+                if (king.getPieceType() == ChessPiece.PieceType.KING && king.getTeamColor() == teamColor){
+                    return mySquare;
+                }
+            }
+        }
+        return null;
+    }
+
     /**
      * Determines if the given team is in check
      *
@@ -99,7 +115,25 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        ChessPosition myKingPosition = findMyKing(teamColor);
+
+        for (int col = 1; col < 9; col++) {
+            for (int row = 1; row < 9; row++) {
+                ChessPosition mySquare = new ChessPosition(row,col);
+                ChessPiece currentPiece = myBoard.getPiece(mySquare);
+
+                if (currentPiece.getTeamColor() != teamColor){
+                    Collection<ChessMove> enemyMoves = currentPiece.pieceMoves(myBoard, mySquare);
+                    for (ChessMove move : enemyMoves) {
+                        if (move.getEndPosition() == myKingPosition) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
