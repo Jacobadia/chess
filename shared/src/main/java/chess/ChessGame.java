@@ -126,7 +126,7 @@ public class ChessGame {
                 if (currentPiece != null && currentPiece.getTeamColor() != teamColor){
                     Collection<ChessMove> enemyMoves = currentPiece.pieceMoves(myBoard, mySquare);
                     for (ChessMove move : enemyMoves) {
-                        if (move.getEndPosition() == myKingPosition) {
+                        if (move.getEndPosition().equals(myKingPosition)) {
                             return true;
                         }
                     }
