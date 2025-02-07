@@ -111,6 +111,12 @@ public class ChessGame {
                 myBoard.addPiece(endSquare, currentPiece);
                 myBoard.addPiece(startSquare, null);
                 moveNotMade = false;
+
+                //pawn promotion
+                if (move.getPromotionPiece() != null) {
+                    currentPiece.setPieceType(move.getPromotionPiece());
+                }
+
                 //change team turn
                 switch (getTeamTurn()) {
                     case WHITE:
