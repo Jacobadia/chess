@@ -13,10 +13,12 @@ import java.util.Objects;
 public class ChessPiece {
     private final ChessGame.TeamColor myColor;
     private ChessPiece.PieceType myType;
+    private boolean doubleMoved;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         myColor = pieceColor;
         myType = type;
+        doubleMoved = false;
     }
 
     /**
@@ -47,6 +49,15 @@ public class ChessPiece {
 
     public void setPieceType(PieceType newType){
         myType = newType;
+    }
+
+    //for En Passant
+    public boolean isDoubleMoved() {
+        return doubleMoved;
+    }
+
+    public void setDoubleMoved(boolean doubleMoved) {
+        this.doubleMoved = doubleMoved;
     }
 
     /**
@@ -260,6 +271,22 @@ public class ChessPiece {
                     } else {
                         validMoves.add(new ChessMove(myPosition, newPosition, null));
                     }
+                }
+            }
+        }
+
+        //En Passant
+        row = myPosition.getRow();
+        col = myPosition.getColumn();
+        for(int i = 1; i > -3; i = i - 3) {
+            col = col + i;
+            if (row >= 1 && row <= 8 && col >= 1 && col <= 8) {
+                ChessPosition enemyPosition = new ChessPosition(row, col);
+                ChessPosition newPosition = new ChessPosition(row + direction, col);
+                ChessPiece occupyingPiece = board.getPiece(enemyPosition);
+                if (occupyingPiece != null && occupyingPiece.getTeamColor() != this.getTeamColor()
+                        && occupyingPiece.isDoubleMoved()) {
+                        validMoves.add(new ChessMove(myPosition, newPosition, null));
                 }
             }
         }

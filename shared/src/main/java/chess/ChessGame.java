@@ -103,8 +103,8 @@ public class ChessGame {
         }
 
         //check all valid moves
-        Collection<ChessMove> possibleMoves = validMoves(startSquare);
         boolean moveNotMade = true;
+        Collection<ChessMove> possibleMoves = validMoves(startSquare);
         for( ChessMove possibleMove : possibleMoves) {
             if (possibleMove.equals(move)) {
                 //make the move
@@ -115,6 +115,33 @@ public class ChessGame {
                 //pawn promotion
                 if (move.getPromotionPiece() != null) {
                     currentPiece.setPieceType(move.getPromotionPiece());
+                }
+
+                //en Passant
+                if (currentPiece.getPieceType() == ChessPiece.PieceType.PAWN) {
+                    ChessPosition enemyPosition =
+                            new ChessPosition(move.getStartPosition().getRow(), move.getEndPosition().getColumn());
+                    if (myBoard.getPiece(enemyPosition) != null && myBoard.getPiece(enemyPosition).isDoubleMoved()) {
+                        myBoard.addPiece(enemyPosition, null);
+                    }
+                }
+
+                //pawn double move tacker
+                if (currentPiece.getPieceType() == ChessPiece.PieceType.PAWN
+                        && move.getEndPosition().getRow() - move.getStartPosition().getRow() > 1) {
+                    currentPiece.setDoubleMoved(true);
+                }
+                //reset all pieces to not doubled moved
+                else {
+                    for (int col = 1; col < 9; col++) {
+                        for (int row = 1; row < 9; row++) {
+                            ChessPosition mySquare = new ChessPosition(row,col);
+                            ChessPiece myPiece = myBoard.getPiece(mySquare);
+                            if (myPiece != null){
+                                myPiece.setDoubleMoved(false);
+                            }
+                        }
+                    }
                 }
 
                 //change team turn
