@@ -128,7 +128,7 @@ public class ChessGame {
 
                 //pawn double move tacker
                 if (currentPiece.getPieceType() == ChessPiece.PieceType.PAWN
-                        && move.getEndPosition().getRow() - move.getStartPosition().getRow() > 1) {
+                        && Math.abs(move.getEndPosition().getRow() - move.getStartPosition().getRow()) > 1) {
                     currentPiece.setDoubleMoved(true);
                 }
                 //reset all pieces to not doubled moved
