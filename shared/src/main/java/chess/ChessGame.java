@@ -76,7 +76,8 @@ public class ChessGame {
                 safeMoves.add(move);
             }
             //add Castle
-            else {
+            else if (currentPiece.getPieceType() == ChessPiece.PieceType.KING
+                    && Math.abs(move.getEndPosition().getColumn() - move.getStartPosition().getColumn()) > 1){
                 //back to original position
                 myBoard.addPiece(move.getEndPosition(), savedPiece);
                 myBoard.addPiece(startPosition, currentPiece);
