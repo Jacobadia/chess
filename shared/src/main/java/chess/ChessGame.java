@@ -69,9 +69,61 @@ public class ChessGame {
             myBoard.addPiece(move.getEndPosition(), currentPiece);
             myBoard.addPiece(startPosition, null);
 
-            //look for if move causes check
-            if(!isInCheck(currentPiece.getTeamColor())) {
+            //add moves that don't cause check
+            if(!isInCheck(currentPiece.getTeamColor())
+                    && (currentPiece.getPieceType() != ChessPiece.PieceType.KING
+                    || Math.abs(move.getEndPosition().getColumn() - move.getStartPosition().getColumn()) <= 1)) {
                 safeMoves.add(move);
+            }
+            //add Castle
+            else {
+                //back to original position
+                myBoard.addPiece(move.getEndPosition(), savedPiece);
+                myBoard.addPiece(startPosition, currentPiece);
+
+                //check for right castle
+                if (move.getEndPosition().getColumn() - move.getStartPosition().getColumn() == 2) {
+                    int myCol = startPosition.getColumn();
+                    int myRow  = startPosition.getRow();
+                    boolean pathClear = true;
+
+                    for (int i = 0; i < 3; i++ ) {
+                        ChessPosition betweenPosition = new ChessPosition(myRow, myCol + i);
+
+                        ChessPiece heldPiece = myBoard.getPiece(betweenPosition);
+                        //test move
+                        myBoard.addPiece(betweenPosition, currentPiece);
+                        myBoard.addPiece(startPosition, null);
+                        if(isInCheck(currentPiece.getTeamColor())) {pathClear = false;}
+                        //back to original position
+                        myBoard.addPiece(betweenPosition, heldPiece);
+                        myBoard.addPiece(startPosition, currentPiece);
+                    }
+                    if (pathClear){safeMoves.add(move);}
+                }
+
+                //check for left castle
+                if (move.getEndPosition().getColumn() - move.getStartPosition().getColumn() == -2) {
+                    int myCol = startPosition.getColumn();
+                    int myRow  = startPosition.getRow();
+                    boolean pathClear = true;
+
+                    for (int i = 0; i > -4; i-- ) {
+                        ChessPosition betweenPosition = new ChessPosition(myRow, myCol + i);
+                        //test move
+                        ChessPiece heldPiece = myBoard.getPiece(betweenPosition);
+                        myBoard.addPiece(betweenPosition, currentPiece);
+                        myBoard.addPiece(startPosition, null);
+                        if(isInCheck(currentPiece.getTeamColor())) {pathClear = false;}
+                        //back to original position
+                        myBoard.addPiece(betweenPosition, heldPiece);
+                        myBoard.addPiece(startPosition, currentPiece);
+                    }
+                    if (pathClear){safeMoves.add(move);}
+                }
+
+
+
             }
 
             //back to original position
@@ -111,6 +163,25 @@ public class ChessGame {
                 myBoard.addPiece(endSquare, currentPiece);
                 myBoard.addPiece(startSquare, null);
                 moveNotMade = false;
+                currentPiece.setHasMoved(true);
+
+                //castle
+                int travelDistance = endSquare.getColumn() - startSquare.getColumn();
+                if (currentPiece.getPieceType() == ChessPiece.PieceType.KING && Math.abs(travelDistance) > 1){
+                    int row = startSquare.getRow();
+                    if (travelDistance == 2) {
+                        ChessPiece myRook = myBoard.getPiece(new ChessPosition(row,8));
+                        myBoard.addPiece(new ChessPosition(row,8), null);
+                        myBoard.addPiece(new ChessPosition(row,6), myRook);
+                    }
+
+                    if (travelDistance == -2) {
+                        ChessPiece myRook = myBoard.getPiece(new ChessPosition(row,1));
+                        myBoard.addPiece(new ChessPosition(row,1), null);
+                        myBoard.addPiece(new ChessPosition(row,4), myRook);
+                    }
+
+                }
 
                 //pawn promotion
                 if (move.getPromotionPiece() != null) {

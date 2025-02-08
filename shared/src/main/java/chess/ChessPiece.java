@@ -14,11 +14,13 @@ public class ChessPiece {
     private final ChessGame.TeamColor myColor;
     private ChessPiece.PieceType myType;
     private boolean doubleMoved;
+    private boolean hasMoved;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         myColor = pieceColor;
         myType = type;
         doubleMoved = false;
+        hasMoved = false;
     }
 
     /**
@@ -58,6 +60,15 @@ public class ChessPiece {
 
     public void setDoubleMoved(boolean doubleMoved) {
         this.doubleMoved = doubleMoved;
+    }
+
+    //for Castleing
+    public boolean isHasMoved() {
+        return hasMoved;
+    }
+
+    public void setHasMoved(boolean hasMoved) {
+        this.hasMoved = hasMoved;
     }
 
     /**
@@ -216,6 +227,38 @@ public class ChessPiece {
                 }
             }
         }
+
+        //Castleing
+        int myRow = myPosition.getRow();
+        int myCol = myPosition.getColumn();
+        //has king moved
+        if (!hasMoved && myCol == 5) {
+
+            //Right Rook
+            int rRookCol = myCol + 3;
+            if (board.getPiece(new ChessPosition(myRow,myCol + 1)) == null //empty space
+                    && board.getPiece(new ChessPosition(myRow,myCol + 2)) == null //empty space
+                    && board.getPiece(new ChessPosition(myRow,rRookCol)) != null //not empty
+                    && !board.getPiece(new ChessPosition(myRow,rRookCol)).isHasMoved()) { //castle that hasn't moved
+                ChessPosition newPosition = new ChessPosition(myRow, myCol + 2);
+                validMoves.add(new ChessMove(myPosition, newPosition, null));
+            }
+
+            //left Rook
+            int lRookCol = myCol - 4;
+            if (board.getPiece(new ChessPosition(myRow,myCol - 1)) == null //empty space
+                    && board.getPiece(new ChessPosition(myRow,myCol - 2)) == null //empty space
+                    && board.getPiece(new ChessPosition(myRow,myCol - 3)) == null //empty space
+                    && board.getPiece(new ChessPosition(myRow,lRookCol)) != null //not empty
+                    && !board.getPiece(new ChessPosition(myRow,lRookCol)).isHasMoved()) { //castle that hasn't moved
+                ChessPosition newPosition = new ChessPosition(myRow, myCol - 2);
+                validMoves.add(new ChessMove(myPosition, newPosition, null));
+            }
+
+        }
+
+
+
     }
 
     private void addPawnMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> validMoves){
