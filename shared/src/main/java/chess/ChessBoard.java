@@ -88,33 +88,4 @@ public class ChessBoard {
     public int hashCode() {
         return Arrays.deepHashCode(squares);
     }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (int row = 7; row >= 0; row--) { // Start from 8th row (Black's side)
-            sb.append(row + 1).append(" "); // Row labels
-            for (int col = 0; col < 8; col++) {
-                ChessPiece piece = squares[row][col];
-                sb.append(piece == null ? ". " : getPieceSymbol(piece)).append(" ");
-            }
-            sb.append("\n");
-        }
-        sb.append("  a b c d e f g h"); // Column labels
-        return sb.toString();
-    }
-
-    // Helper method to get a symbolic representation of a piece
-    private char getPieceSymbol(ChessPiece piece) {
-        switch (piece.getPieceType()) {
-            case PAWN: return piece.getTeamColor() == ChessGame.TeamColor.WHITE ? 'P' : 'p';
-            case ROOK: return piece.getTeamColor() == ChessGame.TeamColor.WHITE ? 'R' : 'r';
-            case KNIGHT: return piece.getTeamColor() == ChessGame.TeamColor.WHITE ? 'N' : 'n';
-            case BISHOP: return piece.getTeamColor() == ChessGame.TeamColor.WHITE ? 'B' : 'b';
-            case QUEEN: return piece.getTeamColor() == ChessGame.TeamColor.WHITE ? 'Q' : 'q';
-            case KING: return piece.getTeamColor() == ChessGame.TeamColor.WHITE ? 'K' : 'k';
-            default: return '?';
-        }
-    }
-
 }
