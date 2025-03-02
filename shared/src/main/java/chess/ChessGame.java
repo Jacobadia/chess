@@ -137,7 +137,6 @@ public class ChessGame {
 	 * @throws InvalidMoveException if move is invalid
 	 */
 	public void makeMove(ChessMove move) throws InvalidMoveException {
-
 		ChessPosition startSquare = move.getStartPosition();
 		ChessPosition endSquare = move.getEndPosition();
 		ChessPiece currentPiece = myBoard.getPiece(startSquare);
@@ -162,71 +161,87 @@ public class ChessGame {
 				moveNotMade = false;
 				currentPiece.setNotMoved(false);
 
-				//castle
-				int travelDistance = endSquare.getColumn() - startSquare.getColumn();
-				if (currentPiece.getPieceType() == ChessPiece.PieceType.KING && Math.abs(travelDistance) > 1) {
-					int row = startSquare.getRow();
-					if (travelDistance == 2) {
-						ChessPiece myRook = myBoard.getPiece(new ChessPosition(row, 8));
-						myBoard.addPiece(new ChessPosition(row, 8), null);
-						myBoard.addPiece(new ChessPosition(row, 6), myRook);
-					}
-
-					if (travelDistance == -2) {
-						ChessPiece myRook = myBoard.getPiece(new ChessPosition(row, 1));
-						myBoard.addPiece(new ChessPosition(row, 1), null);
-						myBoard.addPiece(new ChessPosition(row, 4), myRook);
-					}
-
-				}
-
-				//pawn promotion
+				// Pawn promotion
 				if (move.getPromotionPiece() != null) {
 					currentPiece.setPieceType(move.getPromotionPiece());
 				}
 
-				//en Passant
-				if (currentPiece.getPieceType() == ChessPiece.PieceType.PAWN) {
-					ChessPosition enemyPosition =
-							new ChessPosition(move.getStartPosition().getRow(), move.getEndPosition().getColumn());
-					if (myBoard.getPiece(enemyPosition) != null && myBoard.getPiece(enemyPosition).isDoubleMoved()) {
-						myBoard.addPiece(enemyPosition, null);
-					}
-				}
+				// Handle special moves
+				makeMoveCastling(currentPiece, startSquare, endSquare);
+				makeMoveEnPassant(currentPiece, move);
 
-				//pawn double move tacker
-				if (currentPiece.getPieceType() == ChessPiece.PieceType.PAWN
-						&& Math.abs(move.getEndPosition().getRow() - move.getStartPosition().getRow()) > 1) {
+				// Track pawn double move
+				if (currentPiece.getPieceType() == ChessPiece.PieceType.PAWN &&
+						Math.abs(move.getEndPosition().getRow() - move.getStartPosition().getRow()) > 1) {
 					currentPiece.setDoubleMoved(true);
-				}
-				//reset all pieces to not doubled moved
-				else {
-					for (int col = 1; col < 9; col++) {
-						for (int row = 1; row < 9; row++) {
-							ChessPosition mySquare = new ChessPosition(row, col);
-							ChessPiece myPiece = myBoard.getPiece(mySquare);
-							if (myPiece != null) {
-								myPiece.setDoubleMoved(false);
-							}
-						}
-					}
+				} else {
+					resetDoubleMoveFlags();
 				}
 
-				//change team turn
-				switch (getTeamTurn()) {
-					case WHITE:
-						setTeamTurn(TeamColor.BLACK);
-						break;
-					case BLACK:
-						setTeamTurn(TeamColor.WHITE);
-						break;
-				}
+				switchTeamTurn();
 			}
 		}
+
 		if (moveNotMade) {
 			throw new InvalidMoveException("Invalid move: The piece cannot move there.");
 		}
 	}
+
+	// Helper function to handle castling
+	private void makeMoveCastling(ChessPiece currentPiece, ChessPosition startSquare, ChessPosition endSquare) {
+		int travelDistance = endSquare.getColumn() - startSquare.getColumn();
+		if (currentPiece.getPieceType() == ChessPiece.PieceType.KING && Math.abs(travelDistance) > 1) {
+			int row = startSquare.getRow();
+			if (travelDistance == 2) {
+				ChessPiece myRook = myBoard.getPiece(new ChessPosition(row, 8));
+				myBoard.addPiece(new ChessPosition(row, 8), null);
+				myBoard.addPiece(new ChessPosition(row, 6), myRook);
+			}
+
+			if (travelDistance == -2) {
+				ChessPiece myRook = myBoard.getPiece(new ChessPosition(row, 1));
+				myBoard.addPiece(new ChessPosition(row, 1), null);
+				myBoard.addPiece(new ChessPosition(row, 4), myRook);
+			}
+
+		}
+	}
+
+	// Helper function to handle en passant
+	private void makeMoveEnPassant(ChessPiece currentPiece, ChessMove move) {
+		if (currentPiece.getPieceType() == ChessPiece.PieceType.PAWN) {
+			ChessPosition enemyPosition =
+					new ChessPosition(move.getStartPosition().getRow(), move.getEndPosition().getColumn());
+			if (myBoard.getPiece(enemyPosition) != null && myBoard.getPiece(enemyPosition).isDoubleMoved()) {
+				myBoard.addPiece(enemyPosition, null);
+			}
+		}
+	}
+
+	// Helper function to reset double move flags for all pieces
+	private void resetDoubleMoveFlags() {
+		for (int col = 1; col < 9; col++) {
+			for (int row = 1; row < 9; row++) {
+				ChessPiece piece = myBoard.getPiece(new ChessPosition(row, col));
+				if (piece != null) {
+					piece.setDoubleMoved(false);
+				}
+			}
+		}
+	}
+
+	// Helper function to switch turns
+	private void switchTeamTurn() {
+		switch (getTeamTurn()) {
+			case WHITE:
+				setTeamTurn(TeamColor.BLACK);
+				break;
+			case BLACK:
+				setTeamTurn(TeamColor.WHITE);
+				break;
+		}
+	}
+
 
 
 	/**
