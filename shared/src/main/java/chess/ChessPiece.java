@@ -145,24 +145,10 @@ public class ChessPiece {
 		}
 	}
 
-	private void addKnightMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> validMoves) {
-		int[][] moves = {
-				{2, 1},
-				{2, -1},
-				{-2, -1},
-				{-2, 1},
-				{1, 2},
-				{-1, 2},
-				{-1, -2},
-				{1, -2}
-		};
-
+	private void addKingOrKnightMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> validMoves, int[][] moves) {
 		for (int[] move : moves) {
-			int row = myPosition.getRow();
-			int col = myPosition.getColumn();
-
-			row = row + move[0];
-			col = col + move[1];
+			int row = myPosition.getRow() + move[0];
+			int col = myPosition.getColumn() + move[1];
 
 			if (row >= 1 && row <= 8 && col >= 1 && col <= 8) {
 				ChessPosition newPosition = new ChessPosition(row, col);
@@ -175,34 +161,21 @@ public class ChessPiece {
 		}
 	}
 
+	private void addKnightMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> validMoves) {
+		int[][] moves = {
+				{2, 1}, {2, -1}, {-2, -1}, {-2, 1},
+				{1, 2}, {-1, 2}, {-1, -2}, {1, -2}
+		};
+		addKingOrKnightMoves(board, myPosition, validMoves, moves);
+	}
+
 	private void addKingMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> validMoves) {
 		int[][] moves = {
-				{1, 1},
-				{1, -1},
-				{1, 0},
-				{-1, 1},
-				{-1, -1},
-				{-1, 0},
-				{0, -1},
-				{0, 1}
+				{1, 1}, {1, -1}, {1, 0},
+				{-1, 1}, {-1, -1}, {-1, 0},
+				{0, -1}, {0, 1}
 		};
-
-		for (int[] move : moves) {
-			int row = myPosition.getRow();
-			int col = myPosition.getColumn();
-
-			row = row + move[0];
-			col = col + move[1];
-
-			if (row >= 1 && row <= 8 && col >= 1 && col <= 8) {
-				ChessPosition newPosition = new ChessPosition(row, col);
-				ChessPiece occupyingPiece = board.getPiece(newPosition);
-
-				if (occupyingPiece == null || occupyingPiece.getTeamColor() != this.getTeamColor()) {
-					validMoves.add(new ChessMove(myPosition, newPosition, null));
-				}
-			}
-		}
+		addKingOrKnightMoves(board, myPosition, validMoves, moves);
 
 		//Castleing
 		int myRow = myPosition.getRow();
