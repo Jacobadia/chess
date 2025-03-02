@@ -221,14 +221,7 @@ public class ChessPiece {
 			ChessPiece occupyingPiece = board.getPiece(newPosition);
 
 			if (occupyingPiece == null) {
-				if (row == 1 || row == 8) {
-					validMoves.add(new ChessMove(myPosition, newPosition, PieceType.QUEEN));
-					validMoves.add(new ChessMove(myPosition, newPosition, PieceType.KNIGHT));
-					validMoves.add(new ChessMove(myPosition, newPosition, PieceType.ROOK));
-					validMoves.add(new ChessMove(myPosition, newPosition, PieceType.BISHOP));
-				} else {
-					validMoves.add(new ChessMove(myPosition, newPosition, null));
-				}
+				addPromotionOrRegularMove(validMoves, myPosition, newPosition, row);
 
 				//Double move
 				if ((row == 3 && this.getTeamColor() == ChessGame.TeamColor.WHITE)
@@ -253,21 +246,31 @@ public class ChessPiece {
 				ChessPosition newPosition = new ChessPosition(row, col);
 				ChessPiece occupyingPiece = board.getPiece(newPosition);
 				if (occupyingPiece != null && occupyingPiece.getTeamColor() != this.getTeamColor()) {
-					if (row == 1 || row == 8) {
-						validMoves.add(new ChessMove(myPosition, newPosition, PieceType.QUEEN));
-						validMoves.add(new ChessMove(myPosition, newPosition, PieceType.KNIGHT));
-						validMoves.add(new ChessMove(myPosition, newPosition, PieceType.ROOK));
-						validMoves.add(new ChessMove(myPosition, newPosition, PieceType.BISHOP));
-					} else {
-						validMoves.add(new ChessMove(myPosition, newPosition, null));
-					}
+					addPromotionOrRegularMove(validMoves, myPosition, newPosition, row);
 				}
 			}
 		}
 
 		//En Passant
-		row = myPosition.getRow();
-		col = myPosition.getColumn();
+		addEnPassantMoves(board, myPosition, validMoves, direction);
+
+	}
+
+
+	private void addPromotionOrRegularMove(Collection<ChessMove> validMoves, ChessPosition myPosition, ChessPosition newPosition, int row) {
+		if (row == 1 || row == 8) {
+			validMoves.add(new ChessMove(myPosition, newPosition, PieceType.QUEEN));
+			validMoves.add(new ChessMove(myPosition, newPosition, PieceType.KNIGHT));
+			validMoves.add(new ChessMove(myPosition, newPosition, PieceType.ROOK));
+			validMoves.add(new ChessMove(myPosition, newPosition, PieceType.BISHOP));
+		} else {
+			validMoves.add(new ChessMove(myPosition, newPosition, null));
+		}
+	}
+
+	private void addEnPassantMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> validMoves, int direction) {
+		int row = myPosition.getRow();
+		int col = myPosition.getColumn();
 		for (int i = 1; i > -3; i = i - 3) {
 			col = col + i;
 			if (row >= 1 && row <= 8 && col >= 1 && col <= 8) {
@@ -280,7 +283,6 @@ public class ChessPiece {
 				}
 			}
 		}
-
 	}
 
 
