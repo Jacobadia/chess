@@ -286,29 +286,36 @@ public class ChessGame {
 	}
 
 	/**
+	 * Helper for checkmate and stalemate
+	 *
+	 * @param teamColor which team to check for checkmate
+	 * @return True if the specified team has no valid moves
+	 */
+	private boolean hasAnyValidMove(TeamColor teamColor) {
+		for (int col = 1; col < 9; col++) {
+			for (int row = 1; row < 9; row++) {
+				ChessPosition mySquare = new ChessPosition(row, col);
+				ChessPiece currentPiece = myBoard.getPiece(mySquare);
+
+				if (currentPiece != null && currentPiece.getTeamColor() == teamColor) {
+					Collection<ChessMove> myMoves = validMoves(mySquare);
+					if (!myMoves.isEmpty()) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Determines if the given team is in checkmate
 	 *
 	 * @param teamColor which team to check for checkmate
 	 * @return True if the specified team is in checkmate
 	 */
 	public boolean isInCheckmate(TeamColor teamColor) {
-		if (isInCheck(teamColor)) {
-			for (int col = 1; col < 9; col++) {
-				for (int row = 1; row < 9; row++) {
-					ChessPosition mySquare = new ChessPosition(row, col);
-					ChessPiece currentPiece = myBoard.getPiece(mySquare);
-
-					if (currentPiece != null && currentPiece.getTeamColor() == teamColor) {
-						Collection<ChessMove> myMoves = validMoves(mySquare);
-						if (!myMoves.isEmpty()) {
-							return false;
-						}
-					}
-				}
-			}
-			return true;
-		}
-		return false;
+		return isInCheck(teamColor) && !hasAnyValidMove(teamColor);
 	}
 
 	/**
@@ -319,23 +326,7 @@ public class ChessGame {
 	 * @return True if the specified team is in stalemate, otherwise false
 	 */
 	public boolean isInStalemate(TeamColor teamColor) {
-		if (!isInCheck(teamColor)) {
-			for (int col = 1; col < 9; col++) {
-				for (int row = 1; row < 9; row++) {
-					ChessPosition mySquare = new ChessPosition(row, col);
-					ChessPiece currentPiece = myBoard.getPiece(mySquare);
-
-					if (currentPiece != null && currentPiece.getTeamColor() == teamColor) {
-						Collection<ChessMove> myMoves = validMoves(mySquare);
-						if (!myMoves.isEmpty()) {
-							return false;
-						}
-					}
-				}
-			}
-			return true;
-		}
-		return false;
+		return !isInCheck(teamColor) && !hasAnyValidMove(teamColor);
 	}
 
 	/**
