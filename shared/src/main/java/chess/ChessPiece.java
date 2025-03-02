@@ -82,14 +82,14 @@ public class ChessPiece {
 		Collection<ChessMove> validMoves = new ArrayList<>();
 		switch (getPieceType()) {
 			case BISHOP:
-				addDiagonalMoves(board, myPosition, validMoves);
+				addDiagonalLineMoves(board, myPosition, validMoves);
 				break;
 			case ROOK:
-				addStraightMoves(board, myPosition, validMoves);
+				addStraightLineMoves(board, myPosition, validMoves);
 				break;
 			case QUEEN:
-				addDiagonalMoves(board, myPosition, validMoves);
-				addStraightMoves(board, myPosition, validMoves);
+				addDiagonalLineMoves(board, myPosition, validMoves);
+				addStraightLineMoves(board, myPosition, validMoves);
 				break;
 			case KNIGHT:
 				addKnightMoves(board, myPosition, validMoves);
@@ -104,49 +104,21 @@ public class ChessPiece {
 		return validMoves;
 	}
 
-	private void addDiagonalMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> validMoves) {
+	private void addDiagonalLineMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> validMoves) {
 		int[][] directions = {
-				{1, 1},
-				{-1, 1},
-				{1, -1},
-				{-1, -1}
+				{1, 1}, {-1, 1}, {1, -1}, {-1, -1}
 		};
-
-		for (int[] direction : directions) {
-			int row = myPosition.getRow();
-			int col = myPosition.getColumn();
-
-			while (true) {
-				row = row + direction[0];
-				col = col + direction[1];
-
-				if (row < 1 || row > 8 || col < 1 || col > 8) {
-					break;
-				}
-
-				ChessPosition newPosition = new ChessPosition(row, col);
-				ChessPiece occupyingPiece = board.getPiece(newPosition);
-
-				if (occupyingPiece == null || occupyingPiece.getTeamColor() != this.getTeamColor()) {
-					validMoves.add(new ChessMove(myPosition, newPosition, null));
-				}
-
-				if (occupyingPiece != null) {
-					break;
-				}
-			}
-		}
+		addInLineMoves(board, myPosition, validMoves, directions);
 	}
 
-
-	private void addStraightMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> validMoves) {
+	private void addStraightLineMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> validMoves) {
 		int[][] directions = {
-				{1, 0},
-				{-1, 0},
-				{0, -1},
-				{0, 1}
+				{1, 0}, {-1, 0}, {0, -1}, {0, 1}
 		};
+		addInLineMoves(board, myPosition, validMoves, directions);
+	}
 
+	private void addInLineMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> validMoves, int[][] directions) {
 		for (int[] direction : directions) {
 			int row = myPosition.getRow();
 			int col = myPosition.getColumn();
