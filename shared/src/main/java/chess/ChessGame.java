@@ -243,7 +243,6 @@ public class ChessGame {
 	}
 
 
-
 	/**
 	 * finds this team's king
 	 * added helper function
