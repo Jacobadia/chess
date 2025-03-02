@@ -89,61 +89,45 @@ public class ChessGame {
 	}
 
 
-	//Helper for valid moves
 	private void addCastleValidMoves(Collection<ChessMove> safeMoves, ChessPosition startPosition,
 									 ChessMove move, ChessPiece currentPiece, ChessPiece savedPiece) {
 		//back to original position
 		myBoard.addPiece(move.getEndPosition(), savedPiece);
 		myBoard.addPiece(startPosition, currentPiece);
 
-		//check for right castle
-		if (move.getEndPosition().getColumn() - move.getStartPosition().getColumn() == 2) {
-			int myCol = startPosition.getColumn();
-			int myRow = startPosition.getRow();
-			boolean pathClear = true;
+		int castleDirection = move.getEndPosition().getColumn() - move.getStartPosition().getColumn();
 
-			for (int i = 0; i < 3; i++) {
-				ChessPosition betweenPosition = new ChessPosition(myRow, myCol + i);
+		if (isCastlePathClear(startPosition, currentPiece, castleDirection)) {
+			safeMoves.add(move);
+		}
+	}
 
-				ChessPiece heldPiece = myBoard.getPiece(betweenPosition);
-				//test move
-				myBoard.addPiece(betweenPosition, currentPiece);
-				myBoard.addPiece(startPosition, null);
-				if (isInCheck(currentPiece.getTeamColor())) {
-					pathClear = false;
-				}
-				//back to original position
-				myBoard.addPiece(betweenPosition, heldPiece);
-				myBoard.addPiece(startPosition, currentPiece);
+	private boolean isCastlePathClear(ChessPosition startPosition, ChessPiece currentPiece, int direction) {
+		int myCol = startPosition.getColumn();
+		int myRow = startPosition.getRow();
+		boolean pathClear = true;
+
+		int steps = (direction == 2) ? 3 : 4;
+		int stepIncrement = (direction == 2) ? 1 : -1;
+
+		for (int i = 0; i < steps; i++) {
+			ChessPosition betweenPosition = new ChessPosition(myRow, myCol + (i * stepIncrement));
+			ChessPiece heldPiece = myBoard.getPiece(betweenPosition);
+
+			// Test move
+			myBoard.addPiece(betweenPosition, currentPiece);
+			myBoard.addPiece(startPosition, null);
+
+			if (isInCheck(currentPiece.getTeamColor())) {
+				pathClear = false;
 			}
-			if (pathClear) {
-				safeMoves.add(move);
-			}
+
+			// Back to original position
+			myBoard.addPiece(betweenPosition, heldPiece);
+			myBoard.addPiece(startPosition, currentPiece);
 		}
 
-		//check for left castle
-		if (move.getEndPosition().getColumn() - move.getStartPosition().getColumn() == -2) {
-			int myCol = startPosition.getColumn();
-			int myRow = startPosition.getRow();
-			boolean pathClear = true;
-
-			for (int i = 0; i > -4; i--) {
-				ChessPosition betweenPosition = new ChessPosition(myRow, myCol + i);
-				//test move
-				ChessPiece heldPiece = myBoard.getPiece(betweenPosition);
-				myBoard.addPiece(betweenPosition, currentPiece);
-				myBoard.addPiece(startPosition, null);
-				if (isInCheck(currentPiece.getTeamColor())) {
-					pathClear = false;
-				}
-				//back to original position
-				myBoard.addPiece(betweenPosition, heldPiece);
-				myBoard.addPiece(startPosition, currentPiece);
-			}
-			if (pathClear) {
-				safeMoves.add(move);
-			}
-		}
+		return pathClear;
 	}
 
 	/**
