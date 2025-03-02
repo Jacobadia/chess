@@ -9,8 +9,8 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessPosition {
-	private int myRow;
-	private int myCol;
+	final private int myRow;
+	final private int myCol;
 
 	public ChessPosition(int row, int col) {
 		myRow = row;
