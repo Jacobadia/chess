@@ -275,12 +275,15 @@ public class ChessGame {
 				ChessPosition mySquare = new ChessPosition(row, col);
 				ChessPiece currentPiece = myBoard.getPiece(mySquare);
 
-				if (currentPiece != null && currentPiece.getTeamColor() != teamColor) {
-					Collection<ChessMove> enemyMoves = currentPiece.pieceMoves(myBoard, mySquare);
-					for (ChessMove move : enemyMoves) {
-						if (move.getEndPosition().equals(myKingPosition)) {
-							return true;
-						}
+				if (currentPiece == null || currentPiece.getTeamColor() == teamColor) {
+					continue;
+				}
+
+				Collection<ChessMove> enemyMoves = currentPiece.pieceMoves(myBoard, mySquare);
+
+				for (ChessMove move : enemyMoves) {
+					if (move.getEndPosition().equals(myKingPosition)) {
+						return true;
 					}
 				}
 			}
