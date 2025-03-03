@@ -23,7 +23,7 @@ public class UserServiceTest {
 	}
 
 	@Test
-	void testRegister_Success() {
+	void testRegisterSuccess() {
 		RegisterRequest request =
 				new RegisterRequest("testUser", "password123", "test@example.com");
 		RegisterResult result = userService.register(request);
@@ -34,7 +34,7 @@ public class UserServiceTest {
 	}
 
 	@Test
-	void testRegister_Failure_MissingFields() {
+	void testRegisterFailureMissingFields() {
 		RegisterRequest request = new RegisterRequest("", "password123", "test@example.com");
 		RegisterResult result = userService.register(request);
 
@@ -44,7 +44,7 @@ public class UserServiceTest {
 	}
 
 	@Test
-	void testLogin_Success() {
+	void testLoginSuccess() {
 		RegisterRequest request =
 				new RegisterRequest("testUser", "password123", "test@example.com");
 		userService.register(request);
@@ -56,7 +56,7 @@ public class UserServiceTest {
 	}
 
 	@Test
-	void testLogin_Failure_WrongPassword() {
+	void testLoginFailureWrongPassword() {
 		RegisterRequest request1 =
 				new RegisterRequest("testUser", "password123", "test@example.com");
 		RegisterRequest request2 =
@@ -70,7 +70,7 @@ public class UserServiceTest {
 	}
 
 	@Test
-	void testLogout_Success() {
+	void testLogoutSuccess() {
 		RegisterRequest request =
 				new RegisterRequest("testUser", "password123", "test@example.com");
 		RegisterResult result1 = userService.register(request);
@@ -82,7 +82,7 @@ public class UserServiceTest {
 	}
 
 	@Test
-	void testLogout_Failure_NotLoggedIn() {
+	void testLogoutFailureNotLoggedIn() {
 		RegisterRequest request =
 				new RegisterRequest("testUser", "password123", "test@example.com");
 		RegisterResult result1 = userService.register(request);

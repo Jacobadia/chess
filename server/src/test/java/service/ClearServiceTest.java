@@ -27,7 +27,7 @@ public class ClearServiceTest {
 	}
 
 	@Test
-	void testClear_Success() throws DataAccessException {
+	void testClearSuccess() throws DataAccessException {
 		userDAO.createUser(new model.UserData("user1", "password1", "email1@example.com"));
 		authDAO.createAuth(new model.AuthData("token1", "user1"));
 		gameDAO.createGame(
