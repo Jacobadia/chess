@@ -46,6 +46,11 @@ public class MemoryUserDAO implements UserDAO {
 	}
 
 	@Override
+	public boolean userExists(String username) {
+		return users.containsKey(username);
+	}
+
+	@Override
 	public void clearAllUsers() {
 		users.clear();
 	}
