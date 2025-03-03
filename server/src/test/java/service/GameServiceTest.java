@@ -92,7 +92,7 @@ public class GameServiceTest {
 		authDAO.createAuth(new model.AuthData("token1", "user1"));
 
 		GameData game
-				= new GameData(12, "", "", "testGame", new ChessGame());
+				= new GameData(12, null, null, "testGame", new ChessGame());
 		gameDAO.createGame(game);
 
 		JoinGameRequest request = new JoinGameRequest(ChessGame.TeamColor.WHITE, 12, "token1");
@@ -109,7 +109,7 @@ public class GameServiceTest {
 		authDAO.createAuth(new model.AuthData("token1", "user1"));
 
 		GameData game
-				= new GameData(12, "Ed", "", "testGame", new ChessGame());
+				= new GameData(12, "Ed", null, "testGame", new ChessGame());
 		gameDAO.createGame(game);
 
 		JoinGameRequest request = new JoinGameRequest(ChessGame.TeamColor.WHITE, 12, "token1");

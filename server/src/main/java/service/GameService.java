@@ -61,8 +61,8 @@ public class GameService {
 			int newID = abs(uuid.hashCode());
 			GameData newGame = new GameData(
 					newID,
-					"",
-					"",
+					null,
+					null,
 					r.gameName(),
 					new ChessGame());
 			gameDAO.createGame(newGame);
@@ -76,7 +76,7 @@ public class GameService {
 
 		try {
 
-			if (!gameDAO.gameIDExists(r.gameID())) {
+			if (!gameDAO.gameIDExists(r.gameID()) || r.playerColor() == null) {
 				return new MessageResult("Error: bad request" );
 			}
 
@@ -84,9 +84,9 @@ public class GameService {
 				return new MessageResult("Error: unauthorized");
 			}
 
-			if (!gameDAO.getGame(r.gameID()).whiteUsername().isBlank()
+			if (gameDAO.getGame(r.gameID()).whiteUsername() != null
 					&& r.playerColor() == ChessGame.TeamColor.WHITE
-					|| !gameDAO.getGame(r.gameID()).blackUsername().isBlank()
+					|| gameDAO.getGame(r.gameID()).blackUsername() != null
 					&& r.playerColor() == ChessGame.TeamColor.BLACK) {
 				return new MessageResult("Error: already taken");
 			}
@@ -100,7 +100,7 @@ public class GameService {
 						myGame.gameName(),
 						myGame.game());
 				gameDAO.updateGame(newGame);
-			} else {
+			} else if (r.playerColor() == ChessGame.TeamColor.BLACK){
 				GameData myGame = gameDAO.getGame(r.gameID());
 				GameData newGame = new GameData(
 						myGame.gameID(),
