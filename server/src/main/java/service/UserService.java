@@ -42,13 +42,10 @@ public class UserService {
 			return new RegisterResult(authToken, r.username(), null);
 
 		} catch (Exception e) {
-			// Catch all unexpected exceptions and wrap in DataAccessException
 			return new RegisterResult(null, null, "Error: " + e.getMessage());
 		}
 	}
 
-//	public LoginResult login(LoginRequest r) throws DataAccessException {
-//	}
 //
 //	public LogoutResult logout(LogoutRequest r) throws DataAccessException {
 //	}
