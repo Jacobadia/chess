@@ -25,7 +25,7 @@ public class GameServiceTest {
 		userDAO = new MemoryUserDAO();
 		authDAO = new MemoryAuthDAO();
 		gameDAO = new MemoryGameDAO();
-		gameService = new GameService(userDAO, authDAO, gameDAO);
+		gameService = new GameService(authDAO, gameDAO);
 	}
 
 	@Test
@@ -83,6 +83,39 @@ public class GameServiceTest {
 
 		assertNull(result.gameID());
 		assertEquals("Error: bad request", result.message());
+	}
+
+	@Test
+	void testJoinGameSuccess() throws DataAccessException {
+
+		userDAO.createUser(new model.UserData("user1", "password1", "email1@example.com"));
+		authDAO.createAuth(new model.AuthData("token1", "user1"));
+
+		GameData game
+				= new GameData(12, "", "", "testGame", new ChessGame());
+		gameDAO.createGame(game);
+
+		JoinGameRequest request = new JoinGameRequest(ChessGame.TeamColor.WHITE, 12, "token1");
+		MessageResult result = gameService.joinGame(request);
+
+		assertNull(result.message());
+		assertEquals("user1", gameDAO.getGame(12).whiteUsername());
+	}
+
+	@Test
+	void testJoinGameFailureInvalidAuth() throws DataAccessException {
+
+		userDAO.createUser(new model.UserData("user1", "password1", "email1@example.com"));
+		authDAO.createAuth(new model.AuthData("token1", "user1"));
+
+		GameData game
+				= new GameData(12, "Ed", "", "testGame", new ChessGame());
+		gameDAO.createGame(game);
+
+		JoinGameRequest request = new JoinGameRequest(ChessGame.TeamColor.WHITE, 12, "token1");
+		MessageResult result = gameService.joinGame(request);
+
+		assertEquals("Error: already taken" ,result.message());
 	}
 
 }

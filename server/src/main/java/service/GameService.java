@@ -3,7 +3,6 @@ package service;
 import chess.ChessGame;
 import dataaccess.MemoryAuthDAO;
 import dataaccess.MemoryGameDAO;
-import dataaccess.MemoryUserDAO;
 import model.GameData;
 import service.requestresult.*;
 
@@ -14,12 +13,10 @@ import static java.lang.Math.abs;
 
 public class GameService {
 
-	private final MemoryUserDAO userDAO;
 	private final MemoryAuthDAO authDAO;
 	private final MemoryGameDAO gameDAO;
 
-	public GameService(MemoryUserDAO userDAO, MemoryAuthDAO authDAO, MemoryGameDAO gameDAO) {
-		this.userDAO = userDAO;
+	public GameService(MemoryAuthDAO authDAO, MemoryGameDAO gameDAO) {
 		this.authDAO = authDAO;
 		this.gameDAO = gameDAO;
 	}
@@ -72,6 +69,50 @@ public class GameService {
 			return new CreateGameResult(newID, null);
 		} catch (Exception e) {
 			return new CreateGameResult(null,  "Error: " + e.getMessage());
+		}
+	}
+
+	public MessageResult joinGame(JoinGameRequest r) {
+
+		try {
+
+			if (!gameDAO.gameIDExists(r.gameID())) {
+				return new MessageResult("Error: bad request" );
+			}
+
+			if (!authDAO.authExists(r.authToken())) {
+				return new MessageResult("Error: unauthorized");
+			}
+
+			if (!gameDAO.getGame(r.gameID()).whiteUsername().isBlank()
+					&& r.playerColor() == ChessGame.TeamColor.WHITE
+					|| !gameDAO.getGame(r.gameID()).blackUsername().isBlank()
+					&& r.playerColor() == ChessGame.TeamColor.BLACK) {
+				return new MessageResult("Error: already taken");
+			}
+
+			if (r.playerColor() == ChessGame.TeamColor.WHITE){
+				GameData myGame = gameDAO.getGame(r.gameID());
+				GameData newGame = new GameData(
+						myGame.gameID(),
+						authDAO.getAuth(r.authToken()).username(),
+						myGame.blackUsername(),
+						myGame.gameName(),
+						myGame.game());
+				gameDAO.updateGame(newGame);
+			} else {
+				GameData myGame = gameDAO.getGame(r.gameID());
+				GameData newGame = new GameData(
+						myGame.gameID(),
+						myGame.whiteUsername(),
+						authDAO.getAuth(r.authToken()).username(),
+						myGame.gameName(),
+						myGame.game());
+				gameDAO.updateGame(newGame);
+			}
+			return new MessageResult(null);
+		} catch (Exception e) {
+			return new MessageResult("Error: " + e.getMessage());
 		}
 	}
 
