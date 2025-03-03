@@ -49,6 +49,10 @@ public class UserService {
 	public RegisterResult login(RegisterRequest r) {
 
 		try {
+			if (!userDAO.userExists(r.username())) {
+				return new RegisterResult(null, null, "Error: unauthorized");
+			}
+
 			if ( !userDAO.getUser(r.username()).password().equals(r.password()) ) {
 				return new RegisterResult(null, null, "Error: unauthorized");
 			}
