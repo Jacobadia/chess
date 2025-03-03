@@ -46,6 +46,23 @@ public class UserService {
 		}
 	}
 
+	public RegisterResult login(RegisterRequest r) {
+
+		try {
+			if ( !userDAO.getUser(r.username()).password().equals(r.password()) ) {
+				return new RegisterResult(null, null, "Error: unauthorized");
+			}
+
+			String authToken = generateToken();
+			AuthData authData = new AuthData(authToken, r.username());
+			authDAO.createAuth(authData);
+
+			return new RegisterResult(authToken, r.username(), null);
+
+		} catch (Exception e) {
+			return new RegisterResult(null, null, "Error: " + e.getMessage());
+		}
+	}
 //
 //	public LogoutResult logout(LogoutRequest r) throws DataAccessException {
 //	}

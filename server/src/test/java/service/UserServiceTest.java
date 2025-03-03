@@ -23,12 +23,13 @@ public class UserServiceTest {
 
 	@Test
 	void testRegister_Success() {
-		RegisterRequest request = new RegisterRequest("testUser", "password123", "test@example.com");
+		RegisterRequest request =
+				new RegisterRequest("testUser", "password123", "test@example.com");
 		RegisterResult result = userService.register(request);
 
-		assertNotNull(result.authToken(), "Auth token should not be null on success.");
-		assertEquals("testUser", result.username(), "Returned username should match the input.");
-		assertNull(result.message(), "Error message should be null on success.");
+		assertNotNull(result.authToken());
+		assertEquals("testUser", result.username());
+		assertNull(result.message());
 	}
 
 	@Test
@@ -36,9 +37,36 @@ public class UserServiceTest {
 		RegisterRequest request = new RegisterRequest("", "password123", "test@example.com");
 		RegisterResult result = userService.register(request);
 
-		assertNull(result.authToken(), "Auth token should be null on failure.");
-		assertNull(result.username(), "Username should be null on failure.");
-		assertEquals("Error: bad request", result.message(), "Should return 'Error: bad request'.");
+		assertNull(result.authToken());
+		assertNull(result.username());
+		assertEquals("Error: bad request", result.message());
 	}
+
+	@Test
+	void testLogin_Success() {
+		RegisterRequest request =
+				new RegisterRequest("testUser", "password123", "test@example.com");
+		userService.register(request);
+		RegisterResult result = userService.login(request);
+
+		assertNotNull(result.authToken());
+		assertEquals("testUser", result.username());
+		assertNull(result.message());
+	}
+
+	@Test
+	void testLogin_Failure_WrongPassword() {
+		RegisterRequest request1 =
+				new RegisterRequest("testUser", "password123", "test@example.com");
+		RegisterRequest request2 =
+				new RegisterRequest("testUser", "password1234", "test@example.com");
+		userService.register(request1);
+		RegisterResult result = userService.login(request2);
+
+		assertNull(result.authToken());
+		assertNull(result.username());
+		assertEquals("Error: unauthorized", result.message());
+	}
+
 }
 

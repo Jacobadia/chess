@@ -39,7 +39,7 @@ public class ClearServiceTest {
 
 		ClearResult result = clearService.clear();
 
-		assertNull(result.message(), "Clear should return a success response without an error message.");
+		assertNull(result.message());
 
 		assertThrows(DataAccessException.class, () -> userDAO.getUser("user1"));
 		assertThrows(DataAccessException.class, () -> authDAO.getAuth("token1"));
