@@ -22,7 +22,7 @@ public class GameListHandler implements Route {
 
 		String authToken = req.headers("Authorization");
 		AuthTokenRequest request = new AuthTokenRequest(authToken);
-		ListGamesResult result = gameService.listgames(request);
+		ListGamesResult result = gameService.listGames(request);
 
 		if (result.message() != null) {
 			if (result.message().equals("Error: unauthorized")) {
