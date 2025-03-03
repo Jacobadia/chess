@@ -68,7 +68,7 @@ public class UserService {
 		}
 	}
 
-	public RegisterResult logout(LogoutRequest r) {
+	public RegisterResult logout(AuthTokenRequest r) {
 		try {
 			if (authDAO.authExists(r.authToken())) {
 				authDAO.deleteAuth(r.authToken());

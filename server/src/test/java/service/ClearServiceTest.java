@@ -8,7 +8,7 @@ import dataaccess.DataAccessException;
 import model.GameData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.requestresult.ClearResult;
+import service.requestresult.MessageResult;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,7 +37,7 @@ public class ClearServiceTest {
 		assertNotNull(authDAO.getAuth("token1"));
 		assertNotNull(gameDAO.getGame(12));
 
-		ClearResult result = clearService.clear();
+		MessageResult result = clearService.clear();
 
 		assertNull(result.message());
 

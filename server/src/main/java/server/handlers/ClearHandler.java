@@ -20,7 +20,7 @@ public class ClearHandler implements Route {
 	@Override
 	public Object handle(Request req, Response res) {
 
-		ClearResult result = clearService.clear();
+		MessageResult result = clearService.clear();
 
 		if (result.message() != null) {
 			res.status(500);

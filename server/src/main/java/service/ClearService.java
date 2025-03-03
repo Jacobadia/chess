@@ -19,16 +19,16 @@ public class ClearService {
 		this.gameDAO = gameDAO;
 	}
 
-	public ClearResult clear() {
+	public MessageResult clear() {
 		try {
 			userDAO.clearAllUsers();
 			authDAO.clearAllAuths();
 			gameDAO.clearAllGames();
-			return new ClearResult(null); // Success: return an empty result (200 OK)
+			return new MessageResult(null); // Success: return an empty result (200 OK)
 
 		} catch (Exception e) {
 			// Catch all unexpected exceptions and wrap in DataAccessException
-			return new ClearResult("Error: " + e.getMessage());
+			return new MessageResult("Error: " + e.getMessage());
 		}
 
 	}

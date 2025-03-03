@@ -1,17 +1,20 @@
 package server.handlers;
 
 import com.google.gson.Gson;
-import service.UserService;
-import service.requestresult.*;
-import spark.*;
+import service.GameService;
+import service.requestresult.AuthTokenRequest;
+import service.requestresult.ListGamesResult;
+import spark.Request;
+import spark.Response;
+import spark.Route;
 
 
-public class LogoutHandler implements Route {
-	private final UserService userService;
+public class GameListHandler implements Route {
+	private final GameService gameService;
 	private final Gson gson = new Gson();
 
-	public LogoutHandler(UserService userService) {
-		this.userService = userService;
+	public GameListHandler(GameService gameService) {
+		this.gameService = gameService;
 	}
 
 	@Override
@@ -19,10 +22,9 @@ public class LogoutHandler implements Route {
 
 		String authToken = req.headers("Authorization");
 		AuthTokenRequest request = new AuthTokenRequest(authToken);
-		RegisterResult result = userService.logout(request);
+		ListGamesResult result = gameService.listgames(request);
 
 		if (result.message() != null) {
-			// Determine error type based on message
 			if (result.message().equals("Error: unauthorized")) {
 				res.status(401);
 			} else {
