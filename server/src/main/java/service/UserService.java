@@ -67,9 +67,21 @@ public class UserService {
 			return new RegisterResult(null, null, "Error: " + e.getMessage());
 		}
 	}
-//
-//	public LogoutResult logout(LogoutRequest r) throws DataAccessException {
-//	}
+
+	public RegisterResult logout(LogoutRequest r) {
+		try {
+			if (authDAO.authExists(r.authToken())) {
+				authDAO.deleteAuth(r.authToken());
+				return new RegisterResult(null, null, null);
+			}
+			else {
+				return new RegisterResult(null, null, "Error: unauthorized");
+			}
+		} catch (Exception e) {
+			return new RegisterResult(null, null, "Error: " + e.getMessage());
+		}
+
+	}
 
 	public static String generateToken() {
 		return UUID.randomUUID().toString();

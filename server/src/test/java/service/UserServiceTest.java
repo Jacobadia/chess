@@ -4,6 +4,7 @@ import dataaccess.MemoryUserDAO;
 import dataaccess.MemoryAuthDAO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import service.requestresult.LogoutRequest;
 import service.requestresult.RegisterRequest;
 import service.requestresult.RegisterResult;
 
@@ -66,6 +67,30 @@ public class UserServiceTest {
 		assertNull(result.authToken());
 		assertNull(result.username());
 		assertEquals("Error: unauthorized", result.message());
+	}
+
+	@Test
+	void testLogout_Success() {
+		RegisterRequest request =
+				new RegisterRequest("testUser", "password123", "test@example.com");
+		RegisterResult result1 = userService.register(request);
+
+		RegisterResult result2 = userService.logout(new LogoutRequest(result1.authToken()));
+
+		assertNull(result2.message());
+		assertNull(result2.authToken());
+	}
+
+	@Test
+	void testLogout_Failure_NotLoggedIn() {
+		RegisterRequest request =
+				new RegisterRequest("testUser", "password123", "test@example.com");
+		RegisterResult result1 = userService.register(request);
+
+		userService.logout(new LogoutRequest(result1.authToken()));
+		RegisterResult result3 = userService.logout(new LogoutRequest(result1.authToken()));
+
+		assertEquals("Error: unauthorized", result3.message());
 	}
 
 }

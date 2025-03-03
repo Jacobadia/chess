@@ -46,6 +46,11 @@ public class MemoryAuthDAO implements AuthDAO {
 	}
 
 	@Override
+	public boolean authExists(String auth) {
+		return auths.containsKey(auth);
+	}
+
+	@Override
 	public void clearAllAuths() {
 		auths.clear();
 	}
