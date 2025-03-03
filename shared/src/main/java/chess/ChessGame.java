@@ -375,6 +375,7 @@ public class ChessGame {
 				", whichColorTurn=" + whichColorTurn +
 				'}';
 	}
+
 }
 
 
