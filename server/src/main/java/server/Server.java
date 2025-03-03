@@ -1,25 +1,38 @@
 package server;
 
+import dataaccess.MemoryAuthDAO;
+import dataaccess.MemoryGameDAO;
+import dataaccess.MemoryUserDAO;
+import server.handlers.*;
+import service.UserService;
 import spark.*;
 
 public class Server {
 
-    public int run(int desiredPort) {
-        Spark.port(desiredPort);
+	public int run(int desiredPort) {
+		Spark.port(desiredPort);
 
-        Spark.staticFiles.location("web");
+		Spark.staticFiles.location("web");
 
-        // Register your endpoints and handle exceptions here.
+		// Initialize DAOs and Services
+		MemoryUserDAO userDAO = new MemoryUserDAO();
+		MemoryAuthDAO authDAO = new MemoryAuthDAO();
+		MemoryGameDAO gameDAO = new MemoryGameDAO();
+		UserService userService = new UserService(userDAO, authDAO);
 
-        //This line initializes the server and can be removed once you have a functioning endpoint 
-        Spark.init();
+		// Register your endpoints and handle exceptions here.
+		Spark.post("/user", new RegisterHandler(userService));
+        Spark.delete("/db", new ClearHandler(userDAO, authDAO, gameDAO));
 
-        Spark.awaitInitialization();
-        return Spark.port();
-    }
+		//This line initializes the server and can be removed once you have a functioning endpoint
+		Spark.init();
 
-    public void stop() {
-        Spark.stop();
-        Spark.awaitStop();
-    }
+		Spark.awaitInitialization();
+		return Spark.port();
+	}
+
+	public void stop() {
+		Spark.stop();
+		Spark.awaitStop();
+	}
 }
