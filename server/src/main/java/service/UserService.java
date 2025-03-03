@@ -20,16 +20,16 @@ public class UserService {
 		this.authDAO = authDAO;
 	}
 
-	public RegisterResult register(RegisterRequest r) {
+	public AuthUserNameResult register(UserInfoRequest r) {
 
 		try {
 			if (r.username() == null || r.password() == null || r.email() == null ||
 					r.username().isBlank() || r.password().isBlank() || r.email().isBlank()) {
-				return new RegisterResult(null, null, "Error: bad request");
+				return new AuthUserNameResult(null, null, "Error: bad request");
 			}
 
 			if (userDAO.userExists(r.username())) {
-				return new RegisterResult(null, null, "Error: already taken");
+				return new AuthUserNameResult(null, null, "Error: already taken");
 			}
 
 			UserData newUser = new UserData(r.username(), r.password(), r.email());
@@ -39,45 +39,45 @@ public class UserService {
 			AuthData authData = new AuthData(authToken, r.username());
 			authDAO.createAuth(authData);
 
-			return new RegisterResult(authToken, r.username(), null);
+			return new AuthUserNameResult(authToken, r.username(), null);
 
 		} catch (Exception e) {
-			return new RegisterResult(null, null, "Error: " + e.getMessage());
+			return new AuthUserNameResult(null, null, "Error: " + e.getMessage());
 		}
 	}
 
-	public RegisterResult login(RegisterRequest r) {
+	public AuthUserNameResult login(UserInfoRequest r) {
 
 		try {
 			if (!userDAO.userExists(r.username())) {
-				return new RegisterResult(null, null, "Error: unauthorized");
+				return new AuthUserNameResult(null, null, "Error: unauthorized");
 			}
 
 			if (!userDAO.getUser(r.username()).password().equals(r.password())) {
-				return new RegisterResult(null, null, "Error: unauthorized");
+				return new AuthUserNameResult(null, null, "Error: unauthorized");
 			}
 
 			String authToken = generateToken();
 			AuthData authData = new AuthData(authToken, r.username());
 			authDAO.createAuth(authData);
 
-			return new RegisterResult(authToken, r.username(), null);
+			return new AuthUserNameResult(authToken, r.username(), null);
 
 		} catch (Exception e) {
-			return new RegisterResult(null, null, "Error: " + e.getMessage());
+			return new AuthUserNameResult(null, null, "Error: " + e.getMessage());
 		}
 	}
 
-	public RegisterResult logout(AuthTokenRequest r) {
+	public AuthUserNameResult logout(AuthTokenRequest r) {
 		try {
 			if (authDAO.authExists(r.authToken())) {
 				authDAO.deleteAuth(r.authToken());
-				return new RegisterResult(null, null, null);
+				return new AuthUserNameResult(null, null, null);
 			} else {
-				return new RegisterResult(null, null, "Error: unauthorized");
+				return new AuthUserNameResult(null, null, "Error: unauthorized");
 			}
 		} catch (Exception e) {
-			return new RegisterResult(null, null, "Error: " + e.getMessage());
+			return new AuthUserNameResult(null, null, "Error: " + e.getMessage());
 		}
 
 	}

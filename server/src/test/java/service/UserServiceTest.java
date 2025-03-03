@@ -5,8 +5,8 @@ import dataaccess.MemoryAuthDAO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.requestresult.AuthTokenRequest;
-import service.requestresult.RegisterRequest;
-import service.requestresult.RegisterResult;
+import service.requestresult.UserInfoRequest;
+import service.requestresult.AuthUserNameResult;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,9 +24,9 @@ public class UserServiceTest {
 
 	@Test
 	void testRegisterSuccess() {
-		RegisterRequest request =
-				new RegisterRequest("testUser", "password123", "test@example.com");
-		RegisterResult result = userService.register(request);
+		UserInfoRequest request =
+				new UserInfoRequest("testUser", "password123", "test@example.com");
+		AuthUserNameResult result = userService.register(request);
 
 		assertNotNull(result.authToken());
 		assertEquals("testUser", result.username());
@@ -35,8 +35,8 @@ public class UserServiceTest {
 
 	@Test
 	void testRegisterFailureMissingFields() {
-		RegisterRequest request = new RegisterRequest("", "password123", "test@example.com");
-		RegisterResult result = userService.register(request);
+		UserInfoRequest request = new UserInfoRequest("", "password123", "test@example.com");
+		AuthUserNameResult result = userService.register(request);
 
 		assertNull(result.authToken());
 		assertNull(result.username());
@@ -45,10 +45,10 @@ public class UserServiceTest {
 
 	@Test
 	void testLoginSuccess() {
-		RegisterRequest request =
-				new RegisterRequest("testUser", "password123", "test@example.com");
+		UserInfoRequest request =
+				new UserInfoRequest("testUser", "password123", "test@example.com");
 		userService.register(request);
-		RegisterResult result = userService.login(request);
+		AuthUserNameResult result = userService.login(request);
 
 		assertNotNull(result.authToken());
 		assertEquals("testUser", result.username());
@@ -57,12 +57,12 @@ public class UserServiceTest {
 
 	@Test
 	void testLoginFailureWrongPassword() {
-		RegisterRequest request1 =
-				new RegisterRequest("testUser", "password123", "test@example.com");
-		RegisterRequest request2 =
-				new RegisterRequest("testUser", "password1234", "test@example.com");
+		UserInfoRequest request1 =
+				new UserInfoRequest("testUser", "password123", "test@example.com");
+		UserInfoRequest request2 =
+				new UserInfoRequest("testUser", "password1234", "test@example.com");
 		userService.register(request1);
-		RegisterResult result = userService.login(request2);
+		AuthUserNameResult result = userService.login(request2);
 
 		assertNull(result.authToken());
 		assertNull(result.username());
@@ -71,11 +71,11 @@ public class UserServiceTest {
 
 	@Test
 	void testLogoutSuccess() {
-		RegisterRequest request =
-				new RegisterRequest("testUser", "password123", "test@example.com");
-		RegisterResult result1 = userService.register(request);
+		UserInfoRequest request =
+				new UserInfoRequest("testUser", "password123", "test@example.com");
+		AuthUserNameResult result1 = userService.register(request);
 
-		RegisterResult result2 = userService.logout(new AuthTokenRequest(result1.authToken()));
+		AuthUserNameResult result2 = userService.logout(new AuthTokenRequest(result1.authToken()));
 
 		assertNull(result2.message());
 		assertNull(result2.authToken());
@@ -83,12 +83,12 @@ public class UserServiceTest {
 
 	@Test
 	void testLogoutFailureNotLoggedIn() {
-		RegisterRequest request =
-				new RegisterRequest("testUser", "password123", "test@example.com");
-		RegisterResult result1 = userService.register(request);
+		UserInfoRequest request =
+				new UserInfoRequest("testUser", "password123", "test@example.com");
+		AuthUserNameResult result1 = userService.register(request);
 
 		userService.logout(new AuthTokenRequest(result1.authToken()));
-		RegisterResult result3 = userService.logout(new AuthTokenRequest(result1.authToken()));
+		AuthUserNameResult result3 = userService.logout(new AuthTokenRequest(result1.authToken()));
 
 		assertEquals("Error: unauthorized", result3.message());
 	}

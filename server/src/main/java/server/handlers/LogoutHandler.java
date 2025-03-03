@@ -19,7 +19,7 @@ public class LogoutHandler implements Route {
 
 		String authToken = req.headers("Authorization");
 		AuthTokenRequest request = new AuthTokenRequest(authToken);
-		RegisterResult result = userService.logout(request);
+		AuthUserNameResult result = userService.logout(request);
 
 		if (result.message() != null) {
 			// Determine error type based on message

@@ -17,8 +17,8 @@ public class RegisterHandler implements Route {
 	@Override
 	public Object handle(Request req, Response res) {
 
-		RegisterRequest request = gson.fromJson(req.body(), RegisterRequest.class);
-		RegisterResult result = userService.register(request);
+		UserInfoRequest request = gson.fromJson(req.body(), UserInfoRequest.class);
+		AuthUserNameResult result = userService.register(request);
 
 		if (result.message() != null) {
 			// Determine error type based on message
