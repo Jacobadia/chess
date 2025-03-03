@@ -115,7 +115,7 @@ public class GameServiceTest {
 		JoinGameRequest request = new JoinGameRequest(ChessGame.TeamColor.WHITE, 12, "token1");
 		MessageResult result = gameService.joinGame(request);
 
-		assertEquals("Error: already taken" ,result.message());
+		assertEquals("Error: already taken", result.message());
 	}
 
 }

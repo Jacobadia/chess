@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import service.requestresult.AuthTokenRequest;
 import service.requestresult.RegisterRequest;
 import service.requestresult.RegisterResult;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserServiceTest {

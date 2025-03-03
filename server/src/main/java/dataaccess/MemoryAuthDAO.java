@@ -30,14 +30,6 @@ public class MemoryAuthDAO implements AuthDAO {
 	}
 
 	@Override
-	public void updateAuth(AuthData auth) throws DataAccessException {
-		if (!auths.containsKey(auth.authToken())) {
-			throw new DataAccessException("Auth Token Does Not Exist");
-		}
-		auths.put(auth.authToken(), new AuthData(auth.authToken(), auth.username()));
-	}
-
-	@Override
 	public void deleteAuth(String authToken) throws DataAccessException {
 		if (!auths.containsKey(authToken)) {
 			throw new DataAccessException("Auth Token Does Not Exist");

@@ -32,8 +32,7 @@ public class CreateGameHandler implements Route {
 				res.status(401);
 			} else if (result.message().equals("Error: bad request")) {
 				res.status(401);
-			}
-			else {
+			} else {
 				res.status(500);
 			}
 		} else {

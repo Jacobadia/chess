@@ -53,7 +53,7 @@ public class UserService {
 				return new RegisterResult(null, null, "Error: unauthorized");
 			}
 
-			if ( !userDAO.getUser(r.username()).password().equals(r.password()) ) {
+			if (!userDAO.getUser(r.username()).password().equals(r.password())) {
 				return new RegisterResult(null, null, "Error: unauthorized");
 			}
 
@@ -73,8 +73,7 @@ public class UserService {
 			if (authDAO.authExists(r.authToken())) {
 				authDAO.deleteAuth(r.authToken());
 				return new RegisterResult(null, null, null);
-			}
-			else {
+			} else {
 				return new RegisterResult(null, null, "Error: unauthorized");
 			}
 		} catch (Exception e) {

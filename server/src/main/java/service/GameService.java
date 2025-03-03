@@ -25,7 +25,7 @@ public class GameService {
 
 		try {
 			if (!authDAO.authExists(r.authToken())) {
-				return new ListGamesResult(null,  "Error: unauthorized");
+				return new ListGamesResult(null, "Error: unauthorized");
 			}
 			ArrayList<GameData> listGameData = gameDAO.listGames();
 			ArrayList<GameData> list = new ArrayList<>();
@@ -40,7 +40,7 @@ public class GameService {
 			}
 			return new ListGamesResult(list, null);
 		} catch (Exception e) {
-			return new ListGamesResult(null,  "Error: " + e.getMessage());
+			return new ListGamesResult(null, "Error: " + e.getMessage());
 		}
 	}
 
@@ -50,11 +50,11 @@ public class GameService {
 		try {
 
 			if (r.gameName() == null || r.gameName().isBlank()) {
-				return new CreateGameResult(null, "Error: bad request" );
+				return new CreateGameResult(null, "Error: bad request");
 			}
 
 			if (!authDAO.authExists(r.authToken())) {
-				return new CreateGameResult(null,  "Error: unauthorized");
+				return new CreateGameResult(null, "Error: unauthorized");
 			}
 
 			UUID uuid = UUID.randomUUID();
@@ -68,7 +68,7 @@ public class GameService {
 			gameDAO.createGame(newGame);
 			return new CreateGameResult(newID, null);
 		} catch (Exception e) {
-			return new CreateGameResult(null,  "Error: " + e.getMessage());
+			return new CreateGameResult(null, "Error: " + e.getMessage());
 		}
 	}
 
@@ -77,7 +77,7 @@ public class GameService {
 		try {
 
 			if (!gameDAO.gameIDExists(r.gameID()) || r.playerColor() == null) {
-				return new MessageResult("Error: bad request" );
+				return new MessageResult("Error: bad request");
 			}
 
 			if (!authDAO.authExists(r.authToken())) {
@@ -91,7 +91,7 @@ public class GameService {
 				return new MessageResult("Error: already taken");
 			}
 
-			if (r.playerColor() == ChessGame.TeamColor.WHITE){
+			if (r.playerColor() == ChessGame.TeamColor.WHITE) {
 				GameData myGame = gameDAO.getGame(r.gameID());
 				GameData newGame = new GameData(
 						myGame.gameID(),
@@ -100,7 +100,7 @@ public class GameService {
 						myGame.gameName(),
 						myGame.game());
 				gameDAO.updateGame(newGame);
-			} else if (r.playerColor() == ChessGame.TeamColor.BLACK){
+			} else if (r.playerColor() == ChessGame.TeamColor.BLACK) {
 				GameData myGame = gameDAO.getGame(r.gameID());
 				GameData newGame = new GameData(
 						myGame.gameID(),
