@@ -4,11 +4,9 @@ import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import model.UserData;
 
-import java.util.ArrayList;
-import java.util.Collection;
+
 import java.sql.*;
 import java.util.HashMap;
-import java.util.Map;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
@@ -16,7 +14,7 @@ import static java.sql.Types.NULL;
 
 public class MySqlUserDAO implements UserDAO {
 
-    public MySqlUserDAO() throws dataaccess.DataAccessException {
+    public MySqlUserDAO() throws DataAccessException {
         configureDatabase();
     }
 
@@ -78,17 +76,10 @@ public class MySqlUserDAO implements UserDAO {
 //        return pet.setId(id);
 //    }
 
-    final private Map<String, UserData> users = new HashMap<>();
-
     @Override
     public void createUser(UserData user) throws DataAccessException {
-
-//        if (users.containsKey(user.username())) {
-//            throw new DataAccessException("UserName Taken");
-//        }
-//
-//        UserData myUser = new UserData(user.username(), user.password(), user.email());
-//        users.put(user.username(), myUser);
+        var statement = "INSERT INTO user (username, password, email) VALUES (?, ?, ?)";
+        executeUpdate(statement, user.username(), user.password(), user.email());
     }
 
     @Override
