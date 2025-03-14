@@ -66,8 +66,8 @@ public class MySqlGameDAO implements GameDAO {
 
 
     @Override
-    public void clearAllAuths() throws DataAccessException {
-        var statement = "DELETE FROM AuthTokens Constant…";
+    public void clearAllGames() throws DataAccessException {
+        var statement = "DELETE FROM Games";
         executeUpdate(statement);
     }
 
