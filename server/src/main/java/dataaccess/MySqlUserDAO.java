@@ -1,15 +1,8 @@
 package dataaccess;
 
-import com.google.gson.Gson;
-import dataaccess.DataAccessException;
 import model.UserData;
-
-
 import java.sql.*;
-import java.util.HashMap;
 
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
-import static java.sql.Types.NULL;
 
 
 public class MySqlUserDAO implements UserDAO {
@@ -17,64 +10,6 @@ public class MySqlUserDAO implements UserDAO {
     public MySqlUserDAO() throws DataAccessException {
         configureDatabase();
     }
-
-//    public Pet addPet(Pet pet) throws dataaccess.DataAccessException {
-//        var statement = "INSERT INTO pet (name, type, json) VALUES (?, ?, ?)";
-//        var json = new Gson().toJson(pet);
-//        var id = executeUpdate(statement, pet.name(), pet.type(), json);
-//        return new Pet(id, pet.name(), pet.type());
-//    }
-//
-//    public Pet getPet(int id) throws dataaccess.DataAccessException {
-//        try (var conn = DatabaseManager.getConnection()) {
-//            var statement = "SELECT id, json FROM pet WHERE id=?";
-//            try (var ps = conn.prepareStatement(statement)) {
-//                ps.setInt(1, id);
-//                try (var rs = ps.executeQuery()) {
-//                    if (rs.next()) {
-//                        return readPet(rs);
-//                    }
-//                }
-//            }
-//        } catch (Exception e) {
-//            throw new dataaccess.DataAccessException(500, String.format("Unable to read data: %s", e.getMessage()));
-//        }
-//        return null;
-//    }
-//
-//    public Collection<Pet> listPets() throws dataaccess.DataAccessException {
-//        var result = new ArrayList<Pet>();
-//        try (var conn = DatabaseManager.getConnection()) {
-//            var statement = "SELECT id, json FROM pet";
-//            try (var ps = conn.prepareStatement(statement)) {
-//                try (var rs = ps.executeQuery()) {
-//                    while (rs.next()) {
-//                        result.add(readPet(rs));
-//                    }
-//                }
-//            }
-//        } catch (Exception e) {
-//            throw new dataaccess.DataAccessException(500, String.format("Unable to read data: %s", e.getMessage()));
-//        }
-//        return result;
-//    }
-//
-//    public void deletePet(Integer id) throws dataaccess.DataAccessException {
-//        var statement = "DELETE FROM pet WHERE id=?";
-//        executeUpdate(statement, id);
-//    }
-//
-//    public void deleteAllPets() throws dataaccess.DataAccessException {
-//        var statement = "TRUNCATE pet";
-//        executeUpdate(statement);
-//    }
-//
-//    private Pet readPet(ResultSet rs) throws SQLException {
-//        var id = rs.getInt("id");
-//        var json = rs.getString("json");
-//        var pet = new Gson().fromJson(json, Pet.class);
-//        return pet.setId(id);
-//    }
 
     @Override
     public void createUser(UserData user) throws DataAccessException {
@@ -84,11 +19,23 @@ public class MySqlUserDAO implements UserDAO {
 
     @Override
     public UserData getUser(String username) throws DataAccessException {
-//        if (!users.containsKey(username)) {
-//            throw new DataAccessException("User Does Not Exist");
-//        }
-//        return users.get(username);
-
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT username, password, email FROM user WHERE username=?";
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.setString(1, username);
+                try (var rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return new UserData(
+                                rs.getString("username"),
+                                rs.getString("password"),
+                                rs.getString("email"));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new DataAccessException("User Does Not Exist");
+        }
+        return null;
     }
 
     @Override
@@ -128,11 +75,9 @@ public class MySqlUserDAO implements UserDAO {
     private final String[] createStatements = {
             """
             CREATE TABLE IF NOT EXISTS  users (
-              `id` int NOT NULL AUTO_INCREMENT,
-              `username` varchar(100) NOT NULL,
+              `username` varchar(100) PRIMARY KEY,
               `password` varchar(100) NOT NULL,
               `email` varchar(100) NOT NULL,
-              PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
     };
