@@ -47,17 +47,17 @@ public class MySqlAuthDAO implements AuthDAO {
     }
 
     @Override
-    public boolean userExists(String username) throws DataAccessException {
+    public boolean authExists(String auth) {
         try {
-            getUser(username);
+            getAuth(auth);
             return true;
         } catch (DataAccessException e) {
-            if (e.getMessage().equals("User Does Not Exist")) {
+            if (e.getMessage().equals("Auth Token Does Not Exist")) {
                 return false;
             }
-            throw e;
         }
-    }
+		return false;
+	}
 
 
     @Override
