@@ -46,18 +46,18 @@ public class MySqlGameDAO implements GameDAO {
                 }
             }
         } catch (Exception e) {
-            throw new DataAccessException("Game not found: " + e.getMessage());
+            throw new DataAccessException("Game not found");
         }
         throw new DataAccessException("Game not found");
     }
 
     @Override
-    public boolean authExists(String auth) {
+    public boolean gameIDExists(int gameID) throws DataAccessException {
         try {
-            getAuth(auth);
+            getGame(gameID);
             return true;
         } catch (DataAccessException e) {
-            if (e.getMessage().equals("Auth Token Does Not Exist")) {
+            if (e.getMessage().equals("Game not found")) {
                 return false;
             }
         }
