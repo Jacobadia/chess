@@ -41,7 +41,7 @@ public class MySqlUserDAO implements UserDAO {
                 }
             }
         } catch (Exception e) {
-            throw new DataAccessException("Error retrieving user: " + e.getMessage());
+            throw new DataAccessException("User Does Not Exist");
         }
         throw new DataAccessException("User Does Not Exist");
     }
@@ -62,7 +62,7 @@ public class MySqlUserDAO implements UserDAO {
 
     @Override
     public void clearAllUsers() throws DataAccessException {
-        var statement = "DROP TABLE IF EXISTS users";
+        var statement = "DELETE FROM users";
         executeUpdate(statement);
     }
 
@@ -90,7 +90,7 @@ public class MySqlUserDAO implements UserDAO {
             CREATE TABLE IF NOT EXISTS  users (
               `username` varchar(100) PRIMARY KEY,
               `password` varchar(100) NOT NULL,
-              `email` varchar(100) NOT NULL,
+              `email` varchar(100) NOT NULL
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
     };

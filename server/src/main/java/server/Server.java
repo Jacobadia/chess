@@ -14,7 +14,7 @@ public class Server {
 		Spark.staticFiles.location("web");
 
 		// Initialize DAOs and Services
-		UserDAO userDAO = new MemoryUserDAO();
+		UserDAO userDAO = new MySqlUserDAO();
 		MemoryAuthDAO authDAO = new MemoryAuthDAO();
 		MemoryGameDAO gameDAO = new MemoryGameDAO();
 
