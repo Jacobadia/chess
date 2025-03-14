@@ -10,5 +10,7 @@ public interface UserDAO {
 	boolean userExists(String username) throws DataAccessException;
 
 	void clearAllUsers() throws DataAccessException;
+
+	boolean verifyPassword(String username, String providedPassword) throws DataAccessException;
 }
 

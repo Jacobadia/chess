@@ -53,7 +53,7 @@ public class UserService {
 				return new AuthUserNameResult(null, null, "Error: unauthorized");
 			}
 
-			if (!userDAO.getUser(r.username()).password().equals(r.password())) {
+			if (!userDAO.verifyPassword(r.username(), r.password())) {
 				return new AuthUserNameResult(null, null, "Error: unauthorized");
 			}
 

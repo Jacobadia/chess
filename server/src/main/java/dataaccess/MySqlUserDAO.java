@@ -4,6 +4,8 @@ import model.UserData;
 
 import java.sql.*;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 
 public class MySqlUserDAO implements UserDAO {
 
@@ -21,8 +23,10 @@ public class MySqlUserDAO implements UserDAO {
 			throw new DataAccessException("UserName Taken");
 		}
 
+        String hashedPassword = BCrypt.hashpw(user.password(), BCrypt.gensalt());
+
 		var statement = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
-		executeUpdate(statement, user.username(), user.password(), user.email());
+		executeUpdate(statement, user.username(), hashedPassword, user.email());
 	}
 
 	@Override
@@ -34,8 +38,8 @@ public class MySqlUserDAO implements UserDAO {
 				try (var rs = ps.executeQuery()) {
 					if (rs.next()) {
 						return new UserData(
-								rs.getString("username"),
-								rs.getString("password"),
+                                rs.getString("username"),
+                                rs.getString("password"),
 								rs.getString("email"));
 					}
 				}
@@ -45,6 +49,16 @@ public class MySqlUserDAO implements UserDAO {
 		}
 		throw new DataAccessException("User Does Not Exist");
 	}
+
+    @Override
+    public boolean verifyPassword(String username, String providedPassword) throws DataAccessException {
+        try {
+            UserData user = getUser(username);
+            return BCrypt.checkpw(providedPassword, user.password());
+        } catch (DataAccessException e) {
+            return false;
+        }
+    }
 
 	@Override
 	public boolean userExists(String username) throws DataAccessException {
