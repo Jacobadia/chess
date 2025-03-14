@@ -9,6 +9,6 @@ public interface UserDAO {
 
 	boolean userExists(String username) throws DataAccessException;
 
-	void clearAllUsers();
+	void clearAllUsers() throws DataAccessException;
 }
 

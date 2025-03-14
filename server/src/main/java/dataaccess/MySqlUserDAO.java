@@ -57,8 +57,9 @@ public class MySqlUserDAO implements UserDAO {
 
 
     @Override
-    public void clearAllUsers() {
-//        users.clear();
+    public void clearAllUsers() throws DataAccessException {
+        var statement = "DROP TABLE IF EXISTS users";
+        executeUpdate(statement);
     }
 
     private int executeUpdate(String statement, Object... params) throws dataaccess.DataAccessException {
