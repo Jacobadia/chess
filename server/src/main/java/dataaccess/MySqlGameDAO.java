@@ -28,23 +28,27 @@ public class MySqlGameDAO implements GameDAO {
     }
 
     @Override
-    public AuthData getAuth(String aToken) throws DataAccessException {
+    public GameData getGame(int gameID) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT authtoken, username FROM AuthTokens WHERE authtoken=?";
+            var statement = "SELECT gameID, whiteUsername, blackUsername, gameName, gameData FROM Games WHERE gameID=?";
             try (var ps = conn.prepareStatement(statement)) {
-                ps.setString(1, aToken);
+                ps.setInt(1, gameID);
                 try (var rs = ps.executeQuery()) {
                     if (rs.next()) {
-                        return new AuthData(
-                                rs.getString("authtoken"),
-                                rs.getString("username"));
+                        return new GameData(
+                                rs.getInt("gameID"),
+                                rs.getString("whiteUsername"),
+                                rs.getString("blackUsername"),
+                                rs.getString("gameName"),
+                                rs.getString("gameData") // fix: gameData needs to be stored as a JSON string
+                        );
                     }
                 }
             }
         } catch (Exception e) {
-            throw new DataAccessException("Auth Token Does Not Exist");
+            throw new DataAccessException("Game not found: " + e.getMessage());
         }
-        throw new DataAccessException("Auth Token Does Not Exist");
+        throw new DataAccessException("Game not found");
     }
 
     @Override
