@@ -1,22 +1,22 @@
 package service;
 
 import chess.ChessGame;
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryGameDAO;
+import dataaccess.*;
 import model.GameData;
 import service.requestresult.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static java.lang.Math.abs;
 
 public class GameService {
 
-	private final MemoryAuthDAO authDAO;
-	private final MemoryGameDAO gameDAO;
+	private final AuthDAO authDAO;
+	private final GameDAO gameDAO;
 
-	public GameService(MemoryAuthDAO authDAO, MemoryGameDAO gameDAO) {
+	public GameService(AuthDAO authDAO, GameDAO gameDAO) {
 		this.authDAO = authDAO;
 		this.gameDAO = gameDAO;
 	}
@@ -27,7 +27,7 @@ public class GameService {
 			if (!authDAO.authExists(r.authToken())) {
 				return new ListGamesResult(null, "Error: unauthorized");
 			}
-			ArrayList<GameData> listGameData = gameDAO.listGames();
+			List<GameData> listGameData = gameDAO.listGames();
 			ArrayList<GameData> list = new ArrayList<>();
 			for (GameData game : listGameData) {
 				GameData gameData = new GameData(

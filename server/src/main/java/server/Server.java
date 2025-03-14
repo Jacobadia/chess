@@ -15,7 +15,7 @@ public class Server {
 
 		// Initialize DAOs and Services
 		UserDAO userDAO = new MySqlUserDAO();
-		MemoryAuthDAO authDAO = new MemoryAuthDAO();
+		AuthDAO authDAO = new MySqlAuthDAO();
 		MemoryGameDAO gameDAO = new MemoryGameDAO();
 
 		UserService userService = new UserService(userDAO, authDAO);
