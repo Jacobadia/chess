@@ -18,7 +18,7 @@ public class MySqlAuthDAO implements AuthDAO {
 
     @Override
     public void createAuth(AuthData auth) throws DataAccessException {
-        if (userExists(auth.authToken())) {
+        if (authExists(auth.authToken())) {
             throw new DataAccessException("AuthToken Taken");
         }
 
@@ -62,8 +62,17 @@ public class MySqlAuthDAO implements AuthDAO {
 
     @Override
     public void clearAllAuths() throws DataAccessException {
-        var statement = "DELETE FROM AuthTokens";
+        var statement = "DELETE FROM AuthTokens Constant…";
         executeUpdate(statement);
+    }
+
+    @Override
+    public void deleteAuth(String authToken) throws DataAccessException {
+        if (!authExists(authToken)) {
+            throw new DataAccessException("Auth Token Does Not Exist");
+        }
+        var statement = "DELETE FROM AuthTokens WHERE authtoken=?";
+        executeUpdate(statement, authToken);
     }
 
     private void executeUpdate(String statement, Object... params) throws DataAccessException {
