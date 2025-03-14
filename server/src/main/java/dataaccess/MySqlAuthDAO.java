@@ -6,15 +6,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 
 
-public class MySqlAuthDAO implements AuthDAO {
-
-	public MySqlAuthDAO() {
-		try {
-			configureDatabase();
-		} catch (Exception e) {
-			throw new RuntimeException("Failed to configure database", e);
-		}
-	}
+public class MySqlAuthDAO extends MySqlBaseDAO implements AuthDAO {
 
 	@Override
 	public void createAuth(AuthData auth) throws DataAccessException {
@@ -93,28 +85,16 @@ public class MySqlAuthDAO implements AuthDAO {
 		}
 	}
 
-
-	private final String[] createStatements = {
-			"""
+	@Override
+	protected String[] getCreateStatements() {
+		return new String[]{
+            """
             CREATE TABLE IF NOT EXISTS AuthTokens (
               `authtoken` varchar(255) PRIMARY KEY,
               `username` varchar(100) NOT NULL,
               FOREIGN KEY (`username`) REFERENCES users(`username`) ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
-	};
-
-
-	private void configureDatabase() throws DataAccessException {
-		DatabaseManager.createDatabase();
-		try (var conn = DatabaseManager.getConnection()) {
-			for (var statement : createStatements) {
-				try (var preparedStatement = conn.prepareStatement(statement)) {
-					preparedStatement.executeUpdate();
-				}
-			}
-		} catch (SQLException ex) {
-			throw new DataAccessException(String.format("Unable to configure database: %s", ex.getMessage()));
-		}
+		};
 	}
 }

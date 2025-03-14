@@ -11,6 +11,6 @@ public interface UserDAO {
 
 	void clearAllUsers() throws DataAccessException;
 
-	boolean verifyPassword(String username, String providedPassword) throws DataAccessException;
+	boolean verifyPassword(String username, String providedPassword);
 }
 

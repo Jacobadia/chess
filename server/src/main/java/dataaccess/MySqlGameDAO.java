@@ -11,16 +11,8 @@ import chess.ChessGame;
 import java.util.ArrayList;
 
 
-public class MySqlGameDAO implements GameDAO {
+public class MySqlGameDAO extends MySqlBaseDAO implements GameDAO {
 	private final Gson gson = new Gson();
-
-	public MySqlGameDAO() {
-		try {
-			configureDatabase();
-		} catch (Exception e) {
-			throw new RuntimeException("Failed to configure database", e);
-		}
-	}
 
 	@Override
 	public void createGame(GameData game) throws DataAccessException {
@@ -141,9 +133,10 @@ public class MySqlGameDAO implements GameDAO {
 		return games;
 	}
 
-
-	private final String[] createStatements = {
-			"""
+	@Override
+	protected String[] getCreateStatements() {
+		return new String[]{
+            """
             CREATE TABLE IF NOT EXISTS Games (
               `gameID` INT PRIMARY KEY,
               `whiteUsername` VARCHAR(100),
@@ -154,19 +147,6 @@ public class MySqlGameDAO implements GameDAO {
               FOREIGN KEY (`blackUsername`) REFERENCES users(`username`) ON DELETE SET NULL
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
-	};
-
-
-	private void configureDatabase() throws DataAccessException {
-		DatabaseManager.createDatabase();
-		try (var conn = DatabaseManager.getConnection()) {
-			for (var statement : createStatements) {
-				try (var preparedStatement = conn.prepareStatement(statement)) {
-					preparedStatement.executeUpdate();
-				}
-			}
-		} catch (SQLException ex) {
-			throw new DataAccessException(String.format("Unable to configure database: %s", ex.getMessage()));
-		}
+		};
 	}
 }

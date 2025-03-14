@@ -7,15 +7,7 @@ import java.sql.*;
 import org.mindrot.jbcrypt.BCrypt;
 
 
-public class MySqlUserDAO implements UserDAO {
-
-	public MySqlUserDAO() {
-		try {
-			configureDatabase();
-		} catch (Exception e) {
-			throw new RuntimeException("Failed to configure database", e);
-		}
-	}
+public class MySqlUserDAO extends MySqlBaseDAO implements UserDAO {
 
 	@Override
 	public void createUser(UserData user) throws DataAccessException {
@@ -51,7 +43,7 @@ public class MySqlUserDAO implements UserDAO {
 	}
 
     @Override
-    public boolean verifyPassword(String username, String providedPassword) throws DataAccessException {
+    public boolean verifyPassword(String username, String providedPassword) {
         try {
             UserData user = getUser(username);
             return BCrypt.checkpw(providedPassword, user.password());
@@ -98,28 +90,16 @@ public class MySqlUserDAO implements UserDAO {
 		}
 	}
 
-
-	private final String[] createStatements = {
-			"""
+	@Override
+	protected String[] getCreateStatements() {
+		return new String[]{
+            """
             CREATE TABLE IF NOT EXISTS  users (
               `username` varchar(100) PRIMARY KEY,
               `password` varchar(100) NOT NULL,
               `email` varchar(100) NOT NULL
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
-	};
-
-
-	private void configureDatabase() throws dataaccess.DataAccessException {
-		DatabaseManager.createDatabase();
-		try (var conn = DatabaseManager.getConnection()) {
-			for (var statement : createStatements) {
-				try (var preparedStatement = conn.prepareStatement(statement)) {
-					preparedStatement.executeUpdate();
-				}
-			}
-		} catch (SQLException ex) {
-			throw new DataAccessException(String.format("Unable to configure database: %s", ex.getMessage()));
-		}
+		};
 	}
 }
