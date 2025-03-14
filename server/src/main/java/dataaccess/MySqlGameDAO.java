@@ -72,12 +72,14 @@ public class MySqlGameDAO implements GameDAO {
     }
 
     @Override
-    public void deleteAuth(String authToken) throws DataAccessException {
-        if (!authExists(authToken)) {
-            throw new DataAccessException("Auth Token Does Not Exist");
+    public void updateGame(GameData game) throws DataAccessException {
+        if (!gameIDExists(game.gameID())) {
+            throw new DataAccessException("Game not found");
         }
-        var statement = "DELETE FROM AuthTokens WHERE authtoken=?";
-        executeUpdate(statement, authToken);
+
+        var statement = "UPDATE Games SET whiteUsername=?, blackUsername=?, gameName=?, gameData=? WHERE gameID=?";
+        executeUpdate(statement, game.whiteUsername(), game.blackUsername(), game.gameName(), game.game(), game.gameID());
+        //fix game is not json
     }
 
     private void executeUpdate(String statement, Object... params) throws DataAccessException {
