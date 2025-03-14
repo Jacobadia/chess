@@ -1,13 +1,16 @@
 package dataaccess;
 
+import com.google.gson.Gson;
 import model.GameData;
 
 import java.sql.SQLException;
 import java.sql.Types;
+import chess.ChessGame;
 import java.util.ArrayList;
 
 
 public class MySqlGameDAO implements GameDAO {
+    private final Gson gson = new Gson();
 
     public MySqlGameDAO() {
         try {
@@ -23,8 +26,10 @@ public class MySqlGameDAO implements GameDAO {
             throw new DataAccessException("Game ID already exists");
         }
 
+        String gameJson = gson.toJson(game.game());
+
         var statement = "INSERT INTO Games (gameID, whiteUsername, blackUsername, gameName, gameData) VALUES (?, ?, ?, ?, ?)";
-        executeUpdate(statement, game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName(), game.game());
+        executeUpdate(statement, game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName(), gameJson);
     }
 
     @Override
@@ -35,12 +40,16 @@ public class MySqlGameDAO implements GameDAO {
                 ps.setInt(1, gameID);
                 try (var rs = ps.executeQuery()) {
                     if (rs.next()) {
+
+                        String gameJson = rs.getString("gameData");
+                        ChessGame gameObject = gson.fromJson(gameJson, ChessGame.class);
+
                         return new GameData(
                                 rs.getInt("gameID"),
                                 rs.getString("whiteUsername"),
                                 rs.getString("blackUsername"),
                                 rs.getString("gameName"),
-                                rs.getString("gameData") // fix: gameData needs to be stored as a JSON string
+                                gameObject
                         );
                     }
                 }
@@ -77,9 +86,10 @@ public class MySqlGameDAO implements GameDAO {
             throw new DataAccessException("Game not found");
         }
 
+        String gameJson = gson.toJson(game.game());
+
         var statement = "UPDATE Games SET whiteUsername=?, blackUsername=?, gameName=?, gameData=? WHERE gameID=?";
-        executeUpdate(statement, game.whiteUsername(), game.blackUsername(), game.gameName(), game.game(), game.gameID());
-        //fix game is not json
+        executeUpdate(statement, game.whiteUsername(), game.blackUsername(), game.gameName(), gameJson, game.gameID());
     }
 
     private void executeUpdate(String statement, Object... params) throws DataAccessException {
