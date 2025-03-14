@@ -13,11 +13,11 @@ public class Server {
 
 		Spark.staticFiles.location("web");
 
-		// Initialize DAOs and Services
+		// Initialize DAOs this is where you can switch from memory to SQL
 		UserDAO userDAO = new MySqlUserDAO();
 		AuthDAO authDAO = new MySqlAuthDAO();
-		MemoryGameDAO gameDAO = new MemoryGameDAO();
-
+		GameDAO gameDAO = new MySqlGameDAO();
+		//Initialize Services
 		UserService userService = new UserService(userDAO, authDAO);
 		GameService gameService = new GameService(authDAO, gameDAO);
 
