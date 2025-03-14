@@ -87,7 +87,9 @@ public class MySqlGameDAO implements GameDAO {
             try (var ps = conn.prepareStatement(statement)) {
                 for (int i = 0; i < params.length; i++) {
                     var param = params[i];
-                    if (param instanceof String p) {
+                    if (param instanceof Integer p) {
+                        ps.setInt(i + 1, p);
+                    } else if (param instanceof String p) {
                         ps.setString(i + 1, p);
                     } else if (param == null) {
                         ps.setNull(i + 1, Types.NULL);
@@ -103,10 +105,14 @@ public class MySqlGameDAO implements GameDAO {
 
     private final String[] createStatements = {
             """
-            CREATE TABLE IF NOT EXISTS AuthTokens (
-              `authtoken` varchar(255) PRIMARY KEY,
-              `username` varchar(100) NOT NULL,
-              FOREIGN KEY (`username`) REFERENCES users(`username`) ON DELETE CASCADE
+            CREATE TABLE IF NOT EXISTS Games (
+              `gameID` INT PRIMARY KEY,
+              `whiteUsername` VARCHAR(100),
+              `blackUsername` VARCHAR(100),
+              `gameName` VARCHAR(255) NOT NULL,
+              `gameData` TEXT NOT NULL,
+              FOREIGN KEY (`whiteUsername`) REFERENCES users(`username`) ON DELETE SET NULL,
+              FOREIGN KEY (`blackUsername`) REFERENCES users(`username`) ON DELETE SET NULL
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
     };
