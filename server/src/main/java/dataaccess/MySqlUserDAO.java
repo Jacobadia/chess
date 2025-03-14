@@ -13,6 +13,10 @@ public class MySqlUserDAO implements UserDAO {
 
     @Override
     public void createUser(UserData user) throws DataAccessException {
+        if (userExists(user.username())) {
+            throw new DataAccessException("UserName Taken");
+        }
+
         var statement = "INSERT INTO user (username, password, email) VALUES (?, ?, ?)";
         executeUpdate(statement, user.username(), user.password(), user.email());
     }
@@ -20,7 +24,7 @@ public class MySqlUserDAO implements UserDAO {
     @Override
     public UserData getUser(String username) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT username, password, email FROM user WHERE username=?";
+            var statement = "SELECT username, password, email FROM users WHERE username=?";
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setString(1, username);
                 try (var rs = ps.executeQuery()) {
@@ -33,15 +37,24 @@ public class MySqlUserDAO implements UserDAO {
                 }
             }
         } catch (Exception e) {
-            throw new DataAccessException("User Does Not Exist");
+            throw new DataAccessException("Error retrieving user: " + e.getMessage());
         }
-        return null;
+        throw new DataAccessException("User Does Not Exist");
     }
 
     @Override
-    public boolean userExists(String username) {
-//        return users.containsKey(username);
+    public boolean userExists(String username) throws DataAccessException {
+        try {
+            getUser(username);
+            return true;
+        } catch (DataAccessException e) {
+            if (e.getMessage().equals("User Does Not Exist")) {
+                return false;
+            }
+            throw e;
+        }
     }
+
 
     @Override
     public void clearAllUsers() {
