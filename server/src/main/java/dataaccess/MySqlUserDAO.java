@@ -17,7 +17,7 @@ public class MySqlUserDAO implements UserDAO {
             throw new DataAccessException("UserName Taken");
         }
 
-        var statement = "INSERT INTO user (username, password, email) VALUES (?, ?, ?)";
+        var statement = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
         executeUpdate(statement, user.username(), user.password(), user.email());
     }
 
@@ -62,29 +62,24 @@ public class MySqlUserDAO implements UserDAO {
         executeUpdate(statement);
     }
 
-    private int executeUpdate(String statement, Object... params) throws dataaccess.DataAccessException {
-//        try (var conn = DatabaseManager.getConnection()) {
-//            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
-//                for (var i = 0; i < params.length; i++) {
-//                    var param = params[i];
-//                    if (param instanceof String p) ps.setString(i + 1, p);
-//                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
-//                    else if (param instanceof PetType p) ps.setString(i + 1, p.toString());
-//                    else if (param == null) ps.setNull(i + 1, NULL);
-//                }
-//                ps.executeUpdate();
-//
-//                var rs = ps.getGeneratedKeys();
-//                if (rs.next()) {
-//                    return rs.getInt(1);
-//                }
-//
-//                return 0;
-//            }
-//        } catch (SQLException e) {
-//            throw new dataaccess.DataAccessException(500, String.format("unable to update database: %s, %s", statement, e.getMessage()));
-//        }
+    private void executeUpdate(String statement, Object... params) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var ps = conn.prepareStatement(statement)) {
+                for (int i = 0; i < params.length; i++) {
+                    var param = params[i];
+                    if (param instanceof String p) {
+                        ps.setString(i + 1, p);
+                    } else if (param == null) {
+                        ps.setNull(i + 1, Types.NULL);
+                    }
+                }
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+                throw new DataAccessException("Unable to update database: " + e.getMessage());
+        }
     }
+
 
     private final String[] createStatements = {
             """
@@ -106,7 +101,7 @@ public class MySqlUserDAO implements UserDAO {
                 }
             }
         } catch (SQLException ex) {
-            throw new dataaccess.DataAccessException(500, String.format("Unable to configure database: %s", ex.getMessage()));
+            throw new DataAccessException(String.format("Unable to configure database: %s", ex.getMessage()));
         }
     }
 }
