@@ -96,10 +96,10 @@ public class MySqlAuthDAO implements AuthDAO {
 
     private final String[] createStatements = {
             """
-            CREATE TABLE IF NOT EXISTS  users (
-              `username` varchar(100) PRIMARY KEY,
-              `password` varchar(100) NOT NULL,
-              `email` varchar(100) NOT NULL
+            CREATE TABLE IF NOT EXISTS AuthTokens (
+              `authtoken` varchar(255) PRIMARY KEY,
+              `username` varchar(100) NOT NULL,
+              FOREIGN KEY (`username`) REFERENCES users(`username`) ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
     };
