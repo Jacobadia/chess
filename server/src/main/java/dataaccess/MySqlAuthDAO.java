@@ -27,24 +27,23 @@ public class MySqlAuthDAO implements AuthDAO {
     }
 
     @Override
-    public UserData getUser(String username) throws DataAccessException {
+    public AuthData getAuth(String aToken) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT username, password, email FROM users WHERE username=?";
+            var statement = "SELECT authtoken, username FROM AuthTokens WHERE authtoken=?";
             try (var ps = conn.prepareStatement(statement)) {
-                ps.setString(1, username);
+                ps.setString(1, aToken);
                 try (var rs = ps.executeQuery()) {
                     if (rs.next()) {
-                        return new UserData(
-                                rs.getString("username"),
-                                rs.getString("password"),
-                                rs.getString("email"));
+                        return new AuthData(
+                                rs.getString("authtoken"),
+                                rs.getString("username"));
                     }
                 }
             }
         } catch (Exception e) {
-            throw new DataAccessException("User Does Not Exist");
+            throw new DataAccessException("Auth Token Does Not Exist");
         }
-        throw new DataAccessException("User Does Not Exist");
+        throw new DataAccessException("Auth Token Does Not Exist");
     }
 
     @Override
