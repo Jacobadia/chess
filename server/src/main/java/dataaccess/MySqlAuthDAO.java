@@ -61,8 +61,8 @@ public class MySqlAuthDAO implements AuthDAO {
 
 
     @Override
-    public void clearAllUsers() throws DataAccessException {
-        var statement = "DELETE FROM users";
+    public void clearAllAuths() throws DataAccessException {
+        var statement = "DELETE FROM AuthTokens";
         executeUpdate(statement);
     }
 
