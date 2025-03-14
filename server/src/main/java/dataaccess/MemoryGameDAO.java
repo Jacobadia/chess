@@ -29,7 +29,7 @@ public class MemoryGameDAO implements GameDAO {
 	}
 
 	@Override
-	public ArrayList<GameData> listGames() throws DataAccessException {
+	public ArrayList<GameData> listGames() {
 		return new ArrayList<>(games.values());
 	}
 
@@ -44,12 +44,12 @@ public class MemoryGameDAO implements GameDAO {
 	}
 
 	@Override
-	public void clearAllGames() throws DataAccessException {
+	public void clearAllGames() {
 		games.clear();
 	}
 
 	@Override
-	public boolean gameIDExists(int gameID) throws DataAccessException {
+	public boolean gameIDExists(int gameID) {
 		return games.containsKey(gameID);
 	}
 }
