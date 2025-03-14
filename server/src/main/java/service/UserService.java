@@ -1,7 +1,7 @@
 package service;
 
-import dataaccess.MemoryUserDAO;
-import dataaccess.MemoryAuthDAO;
+import dataaccess.AuthDAO;
+import dataaccess.UserDAO;
 import model.UserData;
 import model.AuthData;
 
@@ -12,10 +12,10 @@ import service.requestresult.*;
 
 public class UserService {
 
-	private final MemoryUserDAO userDAO;
-	private final MemoryAuthDAO authDAO;
+	private final UserDAO userDAO;
+	private final AuthDAO authDAO;
 
-	public UserService(MemoryUserDAO userDAO, MemoryAuthDAO authDAO) {
+	public UserService(UserDAO userDAO, AuthDAO authDAO) {
 		this.userDAO = userDAO;
 		this.authDAO = authDAO;
 	}

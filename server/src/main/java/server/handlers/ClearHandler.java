@@ -1,9 +1,7 @@
 package server.handlers;
 
 import com.google.gson.Gson;
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryGameDAO;
-import dataaccess.MemoryUserDAO;
+import dataaccess.*;
 import service.ClearService;
 import service.requestresult.*;
 import spark.*;
@@ -13,7 +11,7 @@ public class ClearHandler implements Route {
 	private final ClearService clearService;
 	private final Gson gson = new Gson();
 
-	public ClearHandler(MemoryUserDAO userDAO, MemoryAuthDAO authDAO, MemoryGameDAO gameDAO) {
+	public ClearHandler(UserDAO userDAO, AuthDAO authDAO, GameDAO gameDAO) {
 		this.clearService = new ClearService(userDAO, authDAO, gameDAO);
 	}
 

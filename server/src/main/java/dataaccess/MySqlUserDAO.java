@@ -7,8 +7,12 @@ import java.sql.*;
 
 public class MySqlUserDAO implements UserDAO {
 
-    public MySqlUserDAO() throws DataAccessException {
-        configureDatabase();
+    public MySqlUserDAO() {
+        try {
+            configureDatabase();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to configure database", e);
+        }
     }
 
     @Override

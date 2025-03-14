@@ -1,8 +1,6 @@
 package server;
 
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryGameDAO;
-import dataaccess.MemoryUserDAO;
+import dataaccess.*;
 import server.handlers.*;
 import service.GameService;
 import service.UserService;
@@ -16,9 +14,10 @@ public class Server {
 		Spark.staticFiles.location("web");
 
 		// Initialize DAOs and Services
-		MemoryUserDAO userDAO = new MemoryUserDAO();
+		UserDAO userDAO = new MemoryUserDAO();
 		MemoryAuthDAO authDAO = new MemoryAuthDAO();
 		MemoryGameDAO gameDAO = new MemoryGameDAO();
+
 		UserService userService = new UserService(userDAO, authDAO);
 		GameService gameService = new GameService(authDAO, gameDAO);
 

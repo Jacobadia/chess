@@ -1,19 +1,17 @@
 package service;
 
-import dataaccess.MemoryGameDAO;
-import dataaccess.MemoryUserDAO;
-import dataaccess.MemoryAuthDAO;
+import dataaccess.*;
 
 import service.requestresult.*;
 
 
 public class ClearService {
 
-	private final MemoryUserDAO userDAO;
-	private final MemoryAuthDAO authDAO;
-	private final MemoryGameDAO gameDAO;
+	private final UserDAO userDAO;
+	private final AuthDAO authDAO;
+	private final GameDAO gameDAO;
 
-	public ClearService(MemoryUserDAO userDAO, MemoryAuthDAO authDAO, MemoryGameDAO gameDAO) {
+	public ClearService(UserDAO userDAO, AuthDAO authDAO, GameDAO gameDAO) {
 		this.userDAO = userDAO;
 		this.authDAO = authDAO;
 		this.gameDAO = gameDAO;
