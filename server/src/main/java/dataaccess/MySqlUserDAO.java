@@ -51,7 +51,7 @@ public class MySqlUserDAO extends MySqlBaseDAO implements UserDAO {
     }
 
 	@Override
-	public boolean userExists(String username) throws DataAccessException {
+	public boolean userExists(String username) {
 		try {
 			getUser(username);
 			return true;
@@ -59,8 +59,8 @@ public class MySqlUserDAO extends MySqlBaseDAO implements UserDAO {
 			if (e.getMessage().equals("User Does Not Exist")) {
 				return false;
 			}
-			throw e;
 		}
+		return false;
 	}
 
 
