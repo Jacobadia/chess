@@ -50,7 +50,7 @@ public class MySqlAuthDAO extends MySqlBaseDAO implements AuthDAO {
 
 	@Override
 	public void clearAllAuths() throws DataAccessException {
-		var statement = "DELETE FROM AuthTokens Constant…";
+		var statement = "DELETE FROM AuthTokens";
 		executeUpdate(statement);
 	}
 
