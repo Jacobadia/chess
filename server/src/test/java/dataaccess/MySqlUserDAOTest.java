@@ -19,14 +19,14 @@ class MySqlUserDAOTest {
 	}
 
 	@Test
-	void createUser_positive() {
+	void createUserPositive() {
 		UserData newUser = new UserData("newUser", "securePass", "new@example.com");
 		assertDoesNotThrow(() -> userDAO.createUser(newUser));
 		assertTrue(userDAO.userExists("newUser"));
 	}
 
 	@Test
-	void createUser_negative() {
+	void createUserNegative() {
 		assertThrows(DataAccessException.class,
 				() -> userDAO.createUser(new UserData("testUser",
 						"password123",
@@ -34,7 +34,7 @@ class MySqlUserDAOTest {
 	}
 
 	@Test
-	void getUser_positive() throws DataAccessException {
+	void getUserPositive() throws DataAccessException {
 		UserData retrievedUser = userDAO.getUser("testUser");
 		assertNotNull(retrievedUser);
 		assertEquals("testUser", retrievedUser.username());
@@ -42,33 +42,33 @@ class MySqlUserDAOTest {
 	}
 
 	@Test
-	void getUser_negative() {
+	void getUserNegative() {
 		assertThrows(DataAccessException.class, () -> userDAO.getUser("nonExistentUser"));
 	}
 
 	@Test
-	void verifyPassword_positive() {
+	void verifyPasswordPositive() {
 		assertTrue(userDAO.verifyPassword("testUser", "password123"));
 	}
 
 	@Test
-	void verifyPassword_negative() {
+	void verifyPasswordNegative() {
 		assertFalse(userDAO.verifyPassword("testUser", "wrongPassword"));
 		assertFalse(userDAO.verifyPassword("nonExistentUser", "password123"));
 	}
 
 	@Test
-	void userExists_positive() {
+	void userExistsPositive() {
 		assertTrue(userDAO.userExists("testUser"));
 	}
 
 	@Test
-	void userExists_negative() {
+	void userExistsNegative() {
 		assertFalse(userDAO.userExists("nonExistentUser"));
 	}
 
 	@Test
-	void clearAllUsers_positive() {
+	void clearAllUsersPositive() {
 		assertDoesNotThrow(() -> userDAO.clearAllUsers());
 		assertFalse(userDAO.userExists("testUser"));
 	}
