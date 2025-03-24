@@ -28,7 +28,9 @@ class MySqlUserDAOTest {
 	@Test
 	void createUser_negative() {
 		assertThrows(DataAccessException.class,
-				() -> userDAO.createUser(new UserData("testUser", "password123", "duplicate@example.com")));
+				() -> userDAO.createUser(new UserData("testUser",
+						"password123",
+						"duplicate@example.com")));
 	}
 
 	@Test

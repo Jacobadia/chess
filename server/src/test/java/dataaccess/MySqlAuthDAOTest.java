@@ -25,7 +25,7 @@ class MySqlAuthDAOTest {
 	}
 
 	@Test
-	void createAuth_positive() throws DataAccessException {
+	void createAuthPositive() throws DataAccessException {
 		AuthData auth = new AuthData("token123", "testUser");
 		authDAO.createAuth(auth);
 
@@ -35,48 +35,48 @@ class MySqlAuthDAOTest {
 	}
 
 	@Test
-	void createAuth_negative() throws DataAccessException {
+	void createAuthNegative() throws DataAccessException {
 		authDAO.createAuth(new AuthData("duplicateToken", "testUser"));
 		assertThrows(DataAccessException.class,
 				() -> authDAO.createAuth(new AuthData("duplicateToken", "testUser")));
 	}
 
 	@Test
-	void getAuth_positive() throws DataAccessException {
+	void getAuthPositive() throws DataAccessException {
 		authDAO.createAuth(new AuthData("validToken", "testUser"));
 		assertNotNull(authDAO.getAuth("validToken"));
 	}
 
 	@Test
-	void getAuth_negative() {
+	void getAuthNegative() {
 		assertThrows(DataAccessException.class, () -> authDAO.getAuth("invalidToken"));
 	}
 
 	@Test
-	void authExists_positive() throws DataAccessException {
+	void authExistsPositive() throws DataAccessException {
 		authDAO.createAuth(new AuthData("existsToken", "testUser"));
 		assertTrue(authDAO.authExists("existsToken"));
 	}
 
 	@Test
-	void authExists_negative() {
+	void authExistsNegative() {
 		assertFalse(authDAO.authExists("nonExistentToken"));
 	}
 
 	@Test
-	void deleteAuth_positive() throws DataAccessException {
+	void deleteAuthPositive() throws DataAccessException {
 		authDAO.createAuth(new AuthData("deleteToken", "testUser"));
 		authDAO.deleteAuth("deleteToken");
 		assertFalse(authDAO.authExists("deleteToken"));
 	}
 
 	@Test
-	void deleteAuth_negative() {
+	void deleteAuthNegative() {
 		assertThrows(DataAccessException.class, () -> authDAO.deleteAuth("nonExistentToken"));
 	}
 
 	@Test
-	void clearAllAuths_positive() {
+	void clearAllAuthsPositive() {
 		assertDoesNotThrow(authDAO::clearAllAuths);
 	}
 
