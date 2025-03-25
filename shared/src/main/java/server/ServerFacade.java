@@ -12,7 +12,6 @@ import java.net.*;
 public class ServerFacade {
 
     private final String serverUrl;
-    private final Gson gson = new Gson();
 
     public ServerFacade(String url) {
         serverUrl = url;
@@ -34,12 +33,10 @@ public class ServerFacade {
     }
 
     public AuthUserNameResult logout(String authTok) throws ResponseException {
-        AuthTokenRequest auth = new AuthTokenRequest(authTok);
         return this.makeRequest("DELETE", "/session", null, AuthUserNameResult.class, authTok);
     }
 
     public ListGamesResult listGames(String authTok) throws ResponseException {
-        AuthTokenRequest auth = new AuthTokenRequest(authTok);
         return this.makeRequest("GET", "/game", null, ListGamesResult.class, authTok);
     }
 
@@ -48,8 +45,8 @@ public class ServerFacade {
         return this.makeRequest("POST", "/game", gameRequest, CreateGameResult.class, authToken);
     }
 
-    public MessageResult joinGame(ChessGame.TeamColor color, int ID, String auth) throws ResponseException {
-        JoinGameRequest gameRequest = new JoinGameRequest(color, ID, auth);
+    public MessageResult joinGame(ChessGame.TeamColor color, int id, String auth) throws ResponseException {
+        JoinGameRequest gameRequest = new JoinGameRequest(color, id, auth);
         return this.makeRequest("PUT", "/game", gameRequest, MessageResult.class, auth);
     }
 
