@@ -11,10 +11,16 @@ public class ReplMenu {
 	protected static State state = State.SIGNEDOUT;
 	private final String url;
 	protected static String myAuth;
+	private final PreLogInClient preClient;
+	private final LogedInClient logedClient;
+	private final BasicClient gameClient;
 
 	public ReplMenu(String serverUrl) {
 		client = new PreLogInClient(serverUrl);
 		this.url = serverUrl;
+		preClient = new PreLogInClient(url);
+		logedClient = new LogedInClient(url);
+		gameClient = new GameClient(url);
 	}
 
 	public void run() {
@@ -27,14 +33,14 @@ public class ReplMenu {
 			printPrompt();
 			String line = scanner.nextLine();
 
-			if (state ==  State.SIGNEDOUT) {
-				client = new PreLogInClient(url);
+			if (state == State.SIGNEDOUT) {
+				client = preClient;
 			} else if (state == State.SIGNEDIN) {
-				client = new LogedInClient(url);
+				client = logedClient;
 			}
-//			else if (state == State.INGAME) {
-//				client = new GameClient(url);
-//			}
+			else if (state == State.INGAME) {
+				client = gameClient;
+			}
 
 			try {
 				result = client.eval(line);
