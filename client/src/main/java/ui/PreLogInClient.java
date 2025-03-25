@@ -9,7 +9,6 @@ public class PreLogInClient {
     private String userName = null;
     private final ServerFacade server;
     private final String serverUrl;
-    private State state = State.SIGNEDOUT;
 
     public PreLogInClient(String serverUrl) {
         server = new ServerFacade(serverUrl);
@@ -49,7 +48,7 @@ public class PreLogInClient {
             var username = params[0];
             var password = params[1];
             server.login(username, password);
-            state = State.SIGNEDIN;
+            ReplMenu.state = State.SIGNEDIN;
             userName = username;
             return String.format("You signed in as %s.", userName);
         }
