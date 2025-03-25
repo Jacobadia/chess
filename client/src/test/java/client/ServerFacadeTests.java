@@ -60,6 +60,7 @@ public class ServerFacadeTests {
     void logoutSuccess() throws Exception {
         var authData = facade.register("player1", "password", "p1@email.com");
         var result = facade.logout(authData.authToken());
+        assertNotNull(result);
         assertThrows(ResponseException.class, () -> facade.listGames(authData.authToken()));
     }
 
@@ -79,5 +80,18 @@ public class ServerFacadeTests {
     void listGamesFailure() {
         assertThrows(ResponseException.class, () -> facade.listGames("invalidToken"));
     }
+
+    @Test
+    void createGameSuccess() throws Exception {
+        var authData = facade.register("player1", "password", "p1@email.com");
+        var result = facade.createGame("Test Game", authData.authToken());
+        assertNotNull(result);
+    }
+
+    @Test
+    void createGameFailure() {
+        assertThrows(ResponseException.class, () -> facade.createGame("Test Game", "invalidToken"));
+    }
+
 
 }
