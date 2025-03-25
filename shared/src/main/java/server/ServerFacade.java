@@ -1,5 +1,6 @@
 package server;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import exception.ResponseException;
 import server.requestresult.*;
@@ -20,41 +21,48 @@ public class ServerFacade {
 
     public AuthUserNameResult register(String username, String password, String email) throws ResponseException {
         UserInfoRequest user = new UserInfoRequest(username, password, email);
-        return this.makeRequest("POST", "/user", user, AuthUserNameResult.class);
+        return this.makeRequest("POST", "/user", user, AuthUserNameResult.class, null);
     }
 
     public void deleteDatabase() throws ResponseException {
-        this.makeRequest("DELETE", "/db", null, null);
+        this.makeRequest("DELETE", "/db", null, null, null);
     }
 
     public AuthUserNameResult  login(String username, String password) throws ResponseException {
         UserInfoRequest user = new UserInfoRequest(username, password, null);
-        return this.makeRequest("POST", "/session", user, AuthUserNameResult .class);
+        return this.makeRequest("POST", "/session", user, AuthUserNameResult .class, null);
     }
 
     public AuthUserNameResult logout(String authTok) throws ResponseException {
         AuthTokenRequest auth = new AuthTokenRequest(authTok);
-        return this.makeRequest("DELETE", "/session", auth, AuthUserNameResult.class);
+        return this.makeRequest("DELETE", "/session", null, AuthUserNameResult.class, authTok);
     }
 
-    public ListGamesResult listGames(AuthTokenRequest authToken) throws ResponseException {
-        return this.makeRequest("GET", "/game", null, ListGamesResult.class);
+    public ListGamesResult listGames(String authTok) throws ResponseException {
+        AuthTokenRequest auth = new AuthTokenRequest(authTok);
+        return this.makeRequest("GET", "/game", null, ListGamesResult.class, authTok);
     }
 
-    public CreateGameResult createGame(CreateGameRequest game) throws ResponseException {
-        return this.makeRequest("POST", "/game", game, CreateGameResult.class);
+    public CreateGameResult createGame(String gameName, String authToken) throws ResponseException {
+        CreateGameRequest gameRequest = new CreateGameRequest(gameName, authToken);
+        return this.makeRequest("POST", "/game", gameRequest, CreateGameResult.class, authToken);
     }
 
-    public MessageResult joinGame(JoinGameRequest game) throws ResponseException {
-        return this.makeRequest("PUT", "/game", game, MessageResult.class);
+    public MessageResult joinGame(ChessGame.TeamColor color, int ID, String auth) throws ResponseException {
+        JoinGameRequest gameRequest = new JoinGameRequest(color, ID, auth);
+        return this.makeRequest("PUT", "/game", gameRequest, MessageResult.class, auth);
     }
 
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
+    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
+
+            if (authToken != null) {
+                http.setRequestProperty("Authorization", authToken);
+            }
 
             writeBody(request, http);
             http.connect();
