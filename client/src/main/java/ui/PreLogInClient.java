@@ -5,7 +5,7 @@ import java.util.Arrays;
 import exception.ResponseException;
 import server.ServerFacade;
 
-public class PreLogInClient {
+public class PreLogInClient implements BasicClient {
 	private final ServerFacade server;
     private final String serverUrl;
 
@@ -14,6 +14,7 @@ public class PreLogInClient {
         server = new ServerFacade(serverUrl);
     }
 
+    @Override
     public String eval(String input) {
         try {
             var tokens = input.toLowerCase().split(" ");
@@ -48,11 +49,13 @@ public class PreLogInClient {
             var password = params[1];
             server.login(username, password);
             ReplMenu.state = State.SIGNEDIN;
+            ReplMenu.myAuth = "kjNCA";
 			return String.format("You signed in as %s.", username);
         }
         throw new ResponseException(400, "Expected: <username> <password>");
     }
 
+    @Override
     public String help() {
         return """
                 - register <username> <password> <EMAIL> - Create an account

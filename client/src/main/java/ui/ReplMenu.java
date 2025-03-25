@@ -7,9 +7,10 @@ import java.util.Scanner;
 import static ui.EscapeSequences.*;
 
 public class ReplMenu {
-	private PreLogInClient client;
+	private BasicClient client;
 	protected static State state = State.SIGNEDOUT;
 	private final String url;
+	protected static String myAuth;
 
 	public ReplMenu(String serverUrl) {
 		client = new PreLogInClient(serverUrl);
@@ -30,9 +31,10 @@ public class ReplMenu {
 				client = new PreLogInClient(url);
 			} else if (state == State.SIGNEDIN) {
 				client = new LogedInClient(url);
-			} else if (state == State.INGAME) {
-				client = new GameClient(url);
 			}
+//			else if (state == State.INGAME) {
+//				client = new GameClient(url);
+//			}
 
 			try {
 				result = client.eval(line);
