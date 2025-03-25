@@ -14,7 +14,7 @@ public class ReplMenu {
 	}
 
 	public void run() {
-		System.out.println("Welcome to Chess. Please log in or register.");
+		System.out.println("Welcome to Chess! Type Help to get started.");
 		System.out.print(client.help());
 
 		Scanner scanner = new Scanner(System.in);

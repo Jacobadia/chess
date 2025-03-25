@@ -1,10 +1,7 @@
 package ui;
 
 import java.util.Arrays;
-import java.util.Scanner;
 
-import com.google.gson.Gson;
-import model.*;
 import exception.ResponseException;
 import server.ServerFacade;
 
@@ -59,10 +56,13 @@ public class PreLogInClient {
         throw new ResponseException(400, "Expected: <username> <password>");
     }
 
-
-    private void assertSignedIn() throws ResponseException {
-        if (state == State.SIGNEDOUT) {
-            throw new ResponseException(400, "You must sign in");
-        }
+    public String help() {
+        return """
+                - register <username> <password> <EMAIL> - Create an account
+                - login <username> <password> - use existing account
+                - quit
+                - help - possible commands
+                """;
     }
+
 }
