@@ -24,10 +24,8 @@ public class LoginHandler implements Route {
 		if (result.message() != null) {
 			// Determine error type based on message
 			if (result.message().equals("Error: unauthorized")) {
-				res.status(401);
 				throw new ResponseException(401, result.message());
 			} else {
-				res.status(500);
 				throw new ResponseException(500, result.message());
 			}
 		} else {

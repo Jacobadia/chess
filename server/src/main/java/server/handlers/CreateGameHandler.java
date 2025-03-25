@@ -30,13 +30,10 @@ public class CreateGameHandler implements Route {
 
 		if (result.message() != null) {
 			if (result.message().equals("Error: unauthorized")) {
-				res.status(401);
 				throw new ResponseException(401, result.message());
 			} else if (result.message().equals("Error: bad request")) {
-				res.status(401);
 				throw new ResponseException(401, result.message());
 			} else {
-				res.status(500);
 				throw new ResponseException(500, result.message());
 			}
 		} else {

@@ -8,15 +8,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ResponseException extends Exception {
-    final private int statusCode;
+    final private int statCode;
 
-    public ResponseException(int statusCode, String message) {
+    public ResponseException(int statCode, String message) {
         super(message);
-        this.statusCode = statusCode;
+        this.statCode = statCode;
     }
 
     public String toJson() {
-        return new Gson().toJson(Map.of("message", getMessage(), "status", statusCode));
+        return new Gson().toJson(Map.of("message", getMessage(), "status", statCode));
     }
 
     public static ResponseException fromJson(InputStream stream) {
@@ -26,7 +26,7 @@ public class ResponseException extends Exception {
         return new ResponseException(status, message);
     }
 
-    public int StatusCode() {
-        return statusCode;
+    public int statusCode() {
+        return statCode;
     }
 }

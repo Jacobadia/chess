@@ -22,7 +22,6 @@ public class ClearHandler implements Route {
 		MessageResult result = clearService.clear();
 
 		if (result.message() != null) {
-			res.status(500);
 			throw new ResponseException(500, result.message());
 		} else {
 			res.status(200);
