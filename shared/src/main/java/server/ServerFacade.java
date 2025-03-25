@@ -18,7 +18,8 @@ public class ServerFacade {
     }
 
 
-    public AuthUserNameResult register(UserInfoRequest user) throws ResponseException {
+    public AuthUserNameResult register(String username, String password, String email) throws ResponseException {
+        UserInfoRequest user = new UserInfoRequest(username, password, email);
         return this.makeRequest("POST", "/user", user, AuthUserNameResult.class);
     }
 
