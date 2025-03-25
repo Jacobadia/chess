@@ -9,7 +9,7 @@ import static ui.EscapeSequences.*;
 public class ReplMenu {
 	private PreLogInClient client;
 	protected static State state = State.SIGNEDOUT;
-	private String url;
+	private final String url;
 
 	public ReplMenu(String serverUrl) {
 		client = new PreLogInClient(serverUrl);
