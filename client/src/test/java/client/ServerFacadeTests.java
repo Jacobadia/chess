@@ -1,5 +1,6 @@
 package client;
 
+import chess.ChessGame;
 import exception.ResponseException;
 import org.junit.jupiter.api.*;
 import server.Server;
@@ -91,6 +92,20 @@ public class ServerFacadeTests {
     @Test
     void createGameFailure() {
         assertThrows(ResponseException.class, () -> facade.createGame("Test Game", "invalidToken"));
+    }
+
+    @Test
+    void joinGameSuccess() throws Exception {
+        var authData = facade.register("player1", "password", "p1@email.com");
+        var game = facade.createGame("Test Game", authData.authToken());
+        var result = facade.joinGame(ChessGame.TeamColor.WHITE, game.gameID(), authData.authToken());
+        assertNotNull(result);
+    }
+
+    @Test
+    void joinGameFailure() {
+        assertThrows(ResponseException.class,
+                () -> facade.joinGame(ChessGame.TeamColor.WHITE, 999, "invalidToken"));
     }
 
 
