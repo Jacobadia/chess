@@ -26,7 +26,7 @@ public class LogedInClient implements BasicClient {
                 case "list" -> listGames();
 //                case "join" -> joinGame(params);
 //                case "observe" -> observeGame(params);
-//                case "logout" -> logout();
+                case "logout" -> logout();
                 case "quit" -> "quit";
                 case "help" -> help();
                 default -> help();
@@ -51,13 +51,18 @@ public class LogedInClient implements BasicClient {
             return "No games available.";
         }
         return games.stream()
-                .map(game -> String.format("%d. %s - ID: %s White: %s, Black: %s",
+                .map(game -> String.format("| %d. %s | White: %s | Black: %s |",
                         games.indexOf(game) + 1,
                         game.gameName(),
-                        game.gameID(),
                         game.whiteUsername() == null ? "None" : game.whiteUsername(),
                         game.blackUsername() == null ? "None" : game.blackUsername()))
                 .collect(Collectors.joining("\n"));
+    }
+
+    public String logout() throws ResponseException {
+        server.logout(ReplMenu.myAuth);
+        ReplMenu.state = State.SIGNEDOUT;
+        return "Logged out successfully. \n please type help to continue";
     }
 
     @Override
