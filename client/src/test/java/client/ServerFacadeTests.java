@@ -5,8 +5,7 @@ import org.junit.jupiter.api.*;
 import server.Server;
 import server.ServerFacade;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class ServerFacadeTests {
@@ -42,6 +41,19 @@ public class ServerFacadeTests {
     @Test
     void registerFailure() {
         assertThrows(ResponseException.class, () -> facade.register("", "", ""));
+    }
+
+    @Test
+    void loginSuccess() throws Exception {
+        facade.register("player1", "password", "p1@email.com");
+        var authData = facade.login("player1", "password");
+        assertNotNull(authData);
+        assertTrue(authData.authToken().length() > 10);
+    }
+
+    @Test
+    void loginFailure() {
+        assertThrows(ResponseException.class, () -> facade.login("invalidUser", "wrongPassword"));
     }
 
 }

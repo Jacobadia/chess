@@ -27,7 +27,8 @@ public class ServerFacade {
         this.makeRequest("DELETE", "/db", null, null);
     }
 
-    public AuthUserNameResult  login(UserInfoRequest user) throws ResponseException {
+    public AuthUserNameResult  login(String username, String password) throws ResponseException {
+        UserInfoRequest user = new UserInfoRequest(username, password, null);
         return this.makeRequest("POST", "/session", user, AuthUserNameResult .class);
     }
 
