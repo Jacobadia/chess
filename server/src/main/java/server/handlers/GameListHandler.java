@@ -1,6 +1,7 @@
 package server.handlers;
 
 import com.google.gson.Gson;
+import exception.ResponseException;
 import service.GameService;
 import service.requestresult.AuthTokenRequest;
 import service.requestresult.ListGamesResult;
@@ -18,7 +19,7 @@ public class GameListHandler implements Route {
 	}
 
 	@Override
-	public Object handle(Request req, Response res) {
+	public Object handle(Request req, Response res) throws ResponseException {
 
 		String authToken = req.headers("Authorization");
 		AuthTokenRequest request = new AuthTokenRequest(authToken);
@@ -27,8 +28,10 @@ public class GameListHandler implements Route {
 		if (result.message() != null) {
 			if (result.message().equals("Error: unauthorized")) {
 				res.status(401);
+				throw new ResponseException(401, result.message());
 			} else {
 				res.status(500);
+				throw new ResponseException(500, result.message());
 			}
 		} else {
 			res.status(200);

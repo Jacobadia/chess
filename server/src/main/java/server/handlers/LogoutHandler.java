@@ -1,6 +1,7 @@
 package server.handlers;
 
 import com.google.gson.Gson;
+import exception.ResponseException;
 import service.UserService;
 import service.requestresult.*;
 import spark.*;
@@ -15,7 +16,7 @@ public class LogoutHandler implements Route {
 	}
 
 	@Override
-	public Object handle(Request req, Response res) {
+	public Object handle(Request req, Response res) throws ResponseException {
 
 		String authToken = req.headers("Authorization");
 		AuthTokenRequest request = new AuthTokenRequest(authToken);
@@ -25,8 +26,10 @@ public class LogoutHandler implements Route {
 			// Determine error type based on message
 			if (result.message().equals("Error: unauthorized")) {
 				res.status(401);
+				throw new ResponseException(401, result.message());
 			} else {
 				res.status(500);
+				throw new ResponseException(500, result.message());
 			}
 		} else {
 			res.status(200);

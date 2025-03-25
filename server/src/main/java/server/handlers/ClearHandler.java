@@ -2,6 +2,7 @@ package server.handlers;
 
 import com.google.gson.Gson;
 import dataaccess.*;
+import exception.ResponseException;
 import service.ClearService;
 import service.requestresult.*;
 import spark.*;
@@ -16,12 +17,13 @@ public class ClearHandler implements Route {
 	}
 
 	@Override
-	public Object handle(Request req, Response res) {
+	public Object handle(Request req, Response res) throws ResponseException {
 
 		MessageResult result = clearService.clear();
 
 		if (result.message() != null) {
 			res.status(500);
+			throw new ResponseException(500, result.message());
 		} else {
 			res.status(200);
 		}
