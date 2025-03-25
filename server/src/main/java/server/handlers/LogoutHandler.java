@@ -6,6 +6,8 @@ import service.UserService;
 import service.requestresult.*;
 import spark.*;
 
+import static server.handlers.LoginHandler.throwEx;
+
 
 public class LogoutHandler implements Route {
 	private final UserService userService;
@@ -22,14 +24,7 @@ public class LogoutHandler implements Route {
 		AuthTokenRequest request = new AuthTokenRequest(authToken);
 		AuthUserNameResult result = userService.logout(request);
 
-		if (result.message() != null) {
-			// Determine error type based on message
-			if (result.message().equals("Error: unauthorized")) {
-				throw new ResponseException(401, result.message());
-			} else {
-				throw new ResponseException(500, result.message());
-			}
-		} else {
+		if (!throwEx(result.message())) {
 			res.status(200);
 		}
 		return gson.toJson(result);

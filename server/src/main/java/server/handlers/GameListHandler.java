@@ -9,6 +9,8 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+import static server.handlers.LoginHandler.throwEx;
+
 
 public class GameListHandler implements Route {
 	private final GameService gameService;
@@ -25,13 +27,7 @@ public class GameListHandler implements Route {
 		AuthTokenRequest request = new AuthTokenRequest(authToken);
 		ListGamesResult result = gameService.listGames(request);
 
-		if (result.message() != null) {
-			if (result.message().equals("Error: unauthorized")) {
-				throw new ResponseException(401, result.message());
-			} else {
-				throw new ResponseException(500, result.message());
-			}
-		} else {
+		if (!throwEx(result.message())) {
 			res.status(200);
 		}
 		return gson.toJson(result);

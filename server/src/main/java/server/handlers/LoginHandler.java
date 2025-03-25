@@ -21,16 +21,21 @@ public class LoginHandler implements Route {
 		UserInfoRequest request = gson.fromJson(req.body(), UserInfoRequest.class);
 		AuthUserNameResult result = userService.login(request);
 
-		if (result.message() != null) {
-			// Determine error type based on message
-			if (result.message().equals("Error: unauthorized")) {
-				throw new ResponseException(401, result.message());
-			} else {
-				throw new ResponseException(500, result.message());
-			}
-		} else {
+		if (!throwEx(result.message())) {
 			res.status(200);
 		}
 		return gson.toJson(result);
 	}
+
+	static boolean throwEx (String message) throws ResponseException {
+		if (message != null) {
+			if (message.equals("Error: unauthorized")) {
+				throw new ResponseException(401, message);
+			} else {
+				throw new ResponseException(500, message);
+			}
+		}
+		return false;
+	}
+
 }
