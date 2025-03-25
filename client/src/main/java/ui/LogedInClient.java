@@ -1,10 +1,12 @@
 package ui;
 
 import exception.ResponseException;
+import model.GameData;
 import server.ServerFacade;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class LogedInClient implements BasicClient {
 	private final ServerFacade server;
@@ -44,8 +46,18 @@ public class LogedInClient implements BasicClient {
     }
 
     public String listGames() throws ResponseException {
-        ArrayList games = server.listGames(ReplMenu.myAuth);
-        return games.isEmpty() ? "No games available." : String.join("\n", games);
+        List<GameData> games = server.listGames(ReplMenu.myAuth);
+        if (games.isEmpty()) {
+            return "No games available.";
+        }
+        return games.stream()
+                .map(game -> String.format("%d. %s - ID: %s White: %s, Black: %s",
+                        games.indexOf(game) + 1,
+                        game.gameName(),
+                        game.gameID(),
+                        game.whiteUsername() == null ? "None" : game.whiteUsername(),
+                        game.blackUsername() == null ? "None" : game.blackUsername()))
+                .collect(Collectors.joining("\n"));
     }
 
     @Override

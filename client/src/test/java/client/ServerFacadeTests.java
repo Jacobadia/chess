@@ -49,7 +49,7 @@ public class ServerFacadeTests {
         facade.register("player1", "password", "p1@email.com");
         var authData = facade.login("player1", "password");
         assertNotNull(authData);
-        assertTrue(authData.authToken().length() > 10);
+        assertTrue(authData.length() > 10);
     }
 
     @Test
@@ -97,8 +97,8 @@ public class ServerFacadeTests {
     @Test
     void joinGameSuccess() throws Exception {
         var authData = facade.register("player1", "password", "p1@email.com");
-        var game = facade.createGame("Test Game", authData.authToken());
-        var result = facade.joinGame(ChessGame.TeamColor.WHITE, game.gameID(), authData.authToken());
+        var id = facade.createGame("Test Game", authData.authToken());
+        var result = facade.joinGame(ChessGame.TeamColor.WHITE, id, authData.authToken());
         assertNotNull(result);
     }
 

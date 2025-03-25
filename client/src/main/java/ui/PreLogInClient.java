@@ -45,9 +45,8 @@ public class PreLogInClient implements BasicClient {
         if (params.length == 2) {
             var username = params[0];
             var password = params[1];
-            server.login(username, password);
+            ReplMenu.myAuth = server.login(username, password);
             ReplMenu.state = State.SIGNEDIN;
-            ReplMenu.myAuth = "kjNCA";
 			return String.format("You signed in as %s.", username);
         }
         throw new ResponseException(400, "Expected: <username> <password>");

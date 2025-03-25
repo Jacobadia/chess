@@ -2,11 +2,14 @@ package server;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import exception.ResponseException;
+import model.GameData;
 import server.requestresult.*;
 
 
 import java.io.*;
+import java.lang.reflect.Type;
 import java.net.*;
 import java.util.ArrayList;
 
@@ -28,23 +31,32 @@ public class ServerFacade {
         this.makeRequest("DELETE", "/db", null, null, null);
     }
 
-    public AuthUserNameResult  login(String username, String password) throws ResponseException {
+    public String login(String username, String password) throws ResponseException {
         UserInfoRequest user = new UserInfoRequest(username, password, null);
-        return this.makeRequest("POST", "/session", user, AuthUserNameResult .class, null);
+        return (this.makeRequest("POST",
+                "/session",
+                user,
+                AuthUserNameResult .class,
+                null)).authToken();
     }
 
     public AuthUserNameResult logout(String authTok) throws ResponseException {
         return this.makeRequest("DELETE", "/session", null, AuthUserNameResult.class, authTok);
     }
 
-    public ArrayList listGames(String authTok) throws ResponseException {
+    public ArrayList<GameData> listGames(String authTok) throws ResponseException {
         ListGamesResult r = this.makeRequest("GET", "/game", null, ListGamesResult.class, authTok);
-        return r.games();
+
+        Gson gson = new Gson();
+        Type gameListType = new TypeToken<ArrayList<GameData>>() {}.getType();
+
+        String json = gson.toJson(r.games());
+        return gson.fromJson(json, gameListType);
     }
 
-    public CreateGameResult createGame(String gameName, String authToken) throws ResponseException {
+    public int createGame(String gameName, String authToken) throws ResponseException {
         CreateGameRequest gameRequest = new CreateGameRequest(gameName, authToken);
-        return this.makeRequest("POST", "/game", gameRequest, CreateGameResult.class, authToken);
+        return (this.makeRequest("POST", "/game", gameRequest, CreateGameResult.class, authToken)).gameID();
     }
 
     public MessageResult joinGame(ChessGame.TeamColor color, int id, String auth) throws ResponseException {
