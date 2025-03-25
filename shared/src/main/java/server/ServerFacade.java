@@ -2,14 +2,8 @@ package server;
 
 import com.google.gson.Gson;
 import exception.ResponseException;
-import service.requestresult.AuthTokenRequest;
-import service.requestresult.AuthUserNameResult;
-import service.requestresult.CreateGameRequest;
-import service.requestresult.CreateGameResult;
-import service.requestresult.JoinGameRequest;
-import service.requestresult.ListGamesResult;
-import service.requestresult.MessageResult;
-import service.requestresult.UserInfoRequest;
+import server.requestresult.*;
+
 
 import java.io.*;
 import java.net.*;

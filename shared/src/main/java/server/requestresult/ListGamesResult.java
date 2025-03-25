@@ -1,4 +1,4 @@
-package service.requestresult;
+package server.requestresult;
 
 import java.util.ArrayList;
 

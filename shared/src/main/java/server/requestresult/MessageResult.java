@@ -1,4 +1,4 @@
-package service.requestresult;
+package server.requestresult;
 
 public record MessageResult(String message) {
 }
