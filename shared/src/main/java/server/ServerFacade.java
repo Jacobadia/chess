@@ -32,7 +32,8 @@ public class ServerFacade {
         return this.makeRequest("POST", "/session", user, AuthUserNameResult .class);
     }
 
-    public AuthUserNameResult logout(AuthTokenRequest auth) throws ResponseException {
+    public AuthUserNameResult logout(String authTok) throws ResponseException {
+        AuthTokenRequest auth = new AuthTokenRequest(authTok);
         return this.makeRequest("DELETE", "/session", auth, AuthUserNameResult.class);
     }
 
