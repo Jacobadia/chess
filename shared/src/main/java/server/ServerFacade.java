@@ -8,6 +8,7 @@ import server.requestresult.*;
 
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 
 public class ServerFacade {
 
@@ -36,8 +37,9 @@ public class ServerFacade {
         return this.makeRequest("DELETE", "/session", null, AuthUserNameResult.class, authTok);
     }
 
-    public ListGamesResult listGames(String authTok) throws ResponseException {
-        return this.makeRequest("GET", "/game", null, ListGamesResult.class, authTok);
+    public ArrayList listGames(String authTok) throws ResponseException {
+        ListGamesResult r = this.makeRequest("GET", "/game", null, ListGamesResult.class, authTok);
+        return r.games();
     }
 
     public CreateGameResult createGame(String gameName, String authToken) throws ResponseException {
