@@ -6,13 +6,12 @@ import exception.ResponseException;
 import server.ServerFacade;
 
 public class PreLogInClient {
-    private String userName = null;
-    private final ServerFacade server;
+	private final ServerFacade server;
     private final String serverUrl;
 
-    public PreLogInClient(String serverUrl) {
+    public PreLogInClient(String url) {
+        this.serverUrl = url;
         server = new ServerFacade(serverUrl);
-        this.serverUrl = serverUrl;
     }
 
     public String eval(String input) {
@@ -49,8 +48,7 @@ public class PreLogInClient {
             var password = params[1];
             server.login(username, password);
             ReplMenu.state = State.SIGNEDIN;
-            userName = username;
-            return String.format("You signed in as %s.", userName);
+			return String.format("You signed in as %s.", username);
         }
         throw new ResponseException(400, "Expected: <username> <password>");
     }
