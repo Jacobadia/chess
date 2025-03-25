@@ -3,16 +3,14 @@ package ui;
 import exception.ResponseException;
 import server.ServerFacade;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class LogedInClient implements BasicClient {
 	private final ServerFacade server;
-    private final String serverUrl;
 
-    public LogedInClient(String url) {
-        this.serverUrl = url;
-        server = new ServerFacade(serverUrl);
+	public LogedInClient(String url) {
+		server = new ServerFacade(url);
     }
 
     @Override
@@ -46,7 +44,7 @@ public class LogedInClient implements BasicClient {
     }
 
     public String listGames() throws ResponseException {
-        List games = server.listGames(ReplMenu.myAuth);
+        ArrayList games = server.listGames(ReplMenu.myAuth);
         return games.isEmpty() ? "No games available." : String.join("\n", games);
     }
 

@@ -7,11 +7,9 @@ import server.ServerFacade;
 
 public class PreLogInClient implements BasicClient {
 	private final ServerFacade server;
-    private final String serverUrl;
 
-    public PreLogInClient(String url) {
-        this.serverUrl = url;
-        server = new ServerFacade(serverUrl);
+	public PreLogInClient(String url) {
+		server = new ServerFacade(url);
     }
 
     @Override
