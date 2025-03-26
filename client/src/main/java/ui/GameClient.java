@@ -31,8 +31,8 @@ public class GameClient implements BasicClient {
 			var tokens = input.toLowerCase().split(" ");
 			var cmd = (tokens.length > 0) ? tokens[0] : "help";
 			return switch (cmd) {
-				case "white" -> White();
-				case "black" -> Black();
+				case "white" -> white();
+				case "black" -> black();
 				case "leave" -> leave();
 				case "quit" -> "quit";
 				case "help" -> help();
@@ -45,7 +45,7 @@ public class GameClient implements BasicClient {
 		return "\n please type help to continue";
 	}
 
-	public static String White() {
+	public static String white() {
 		System.out.print(ERASE_SCREEN);
 
 		for (int row = 0; row < 8; row++) {
@@ -66,7 +66,7 @@ public class GameClient implements BasicClient {
 		return "";
 	}
 
-	public static String Black() {
+	public static String black() {
 		System.out.print(ERASE_SCREEN);
 
 		for (int row = 7; row >= 0; row--) {  // Reverse row order
