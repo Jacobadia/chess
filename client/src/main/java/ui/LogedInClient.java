@@ -44,12 +44,16 @@ public class LogedInClient implements BasicClient {
 	}
 
 	public String createGame(String... params) throws ResponseException {
+		try{
 		if (params.length == 1) {
 			var gameName = params[0];
 			var gameId = server.createGame(gameName, ReplMenu.myAuth);
-			return "Game created with ID: " + gameId;
+			return "Game " + gameName + " created!";
 		}
-		throw new ResponseException(400, "Expected: <GAME NAME>");
+		} catch (Exception e) {
+			throw new ResponseException(400, "Expected: <Game-Name>");
+		}
+		throw new ResponseException(400, "Expected: <Game-Name>");
 	}
 
 	public String listGames() throws ResponseException {
@@ -95,34 +99,39 @@ public class LogedInClient implements BasicClient {
 
 				server.joinGame(playerColor, gameId, ReplMenu.myAuth);
 				ReplMenu.state = State.INGAME;
-				return String.format(" You are on team %s. \n Type help to continue", playerColor);
+				return String.format(" You are on team %s. \n Press enter to continue", playerColor);
 			} catch (Exception e) {
-				throw new ResponseException(400, "Expected: <Game-Number> <WHITE|BLACK>");
+				throw new ResponseException(400, "Expected: <Game-Number> <White|Black>");
 			}
 		} else {
-			throw new ResponseException(400, "Expected: <Game-Number> <WHITE|BLACK>");
+			throw new ResponseException(400, "Expected: <Game-Number> <White|Black>");
 		}
 
 	}
 
     public String observeGame(String... params) throws ResponseException {
-        return joinGame(params);
+		int gameNum = Integer.parseInt(params[0]);
+		if (!this.gameIndexMap.containsKey(gameNum)) {
+			throw new ResponseException(400, "Invalid game number. Use 'list' to see available games.");
+		}
+		ReplMenu.state = State.INGAME;
+		return String.format(" You are watching game %s. \n Press enter to continue", gameNum);
     }
 
 
 	public String logout() throws ResponseException {
 		server.logout(ReplMenu.myAuth);
 		ReplMenu.state = State.SIGNEDOUT;
-		return "Logged out successfully. \n please type help to continue";
+		return "Logged out successfully. \n Press enter to continue";
 	}
 
 	@Override
 	public String help() {
 		return """
-				- create <GAME NAME> - Create a game
+				- create <game name> - Create a game
 				- list - All games
-				- join <ID> [WHITE or BLACK] - Join as player
-				- observe <ID> - Watch a game
+				- join <game number> [White or Black] - Join as player
+				- observe <game number> - Watch a game
 				- logout - exit your account
 				- quit - exit program
 				- help - all possible commands
