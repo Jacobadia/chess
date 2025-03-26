@@ -10,9 +10,6 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
-import static chess.ChessGame.TeamColor.BLACK;
-import static chess.ChessGame.TeamColor.WHITE;
-
 public class LogedInClient implements BasicClient {
 	private final ServerFacade server;
     private final Map<Integer, Integer> gameIndexMap;
@@ -97,7 +94,7 @@ public class LogedInClient implements BasicClient {
 		}
 
 		int gameId = this.gameIndexMap.get(gameNum);
-		ChessGame.TeamColor playerColor = null;
+		ChessGame.TeamColor playerColor;
 
 		if (params[1].equalsIgnoreCase("WHITE")) {
 			playerColor = ChessGame.TeamColor.WHITE;
