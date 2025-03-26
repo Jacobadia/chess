@@ -81,32 +81,42 @@ public class LogedInClient implements BasicClient {
     }
 
 	public String joinGame(String... params) throws ResponseException {
-		if (params.length == 2) {
-				int gameNum = Integer.parseInt(params[0]);
-                if (!this.gameIndexMap.containsKey(gameNum)) {
-                    throw new ResponseException(400, "Invalid game number. Use 'list' to see available games.");
-                }
-            try {
-                int gameId = this.gameIndexMap.get(gameNum);
-
-				ChessGame.TeamColor playerColor = null;
-				if (params[1].equalsIgnoreCase("WHITE")) {
-					playerColor = WHITE;
-				}
-				if (params[1].equalsIgnoreCase("BLACK")) {
-					playerColor = BLACK;
-				}
-
-				server.joinGame(playerColor, gameId, ReplMenu.myAuth);
-				ReplMenu.state = State.INGAME;
-				return String.format(" You are on team %s. \n Press enter to continue", playerColor);
-			} catch (Exception e) {
-				throw new ResponseException(400, "Expected: <Game-Number> <White|Black>");
-			}
-		} else {
+		if (params.length != 2) {
 			throw new ResponseException(400, "Expected: <Game-Number> <White|Black>");
 		}
 
+		int gameNum;
+		try {
+			gameNum = Integer.parseInt(params[0]);
+		} catch (NumberFormatException e) {
+			throw new ResponseException(400, "Invalid game number. Please enter a valid integer.");
+		}
+
+		if (!this.gameIndexMap.containsKey(gameNum)) {
+			throw new ResponseException(400, "Invalid game number. Use 'list' to see available games.");
+		}
+
+		int gameId = this.gameIndexMap.get(gameNum);
+		ChessGame.TeamColor playerColor = null;
+
+		if (params[1].equalsIgnoreCase("WHITE")) {
+			playerColor = ChessGame.TeamColor.WHITE;
+		} else if (params[1].equalsIgnoreCase("BLACK")) {
+			playerColor = ChessGame.TeamColor.BLACK;
+		} else {
+			throw new ResponseException(400, "Invalid color choice. Expected 'White' or 'Black'.");
+		}
+
+		try {
+			server.joinGame(playerColor, gameId, ReplMenu.myAuth);
+			ReplMenu.state = State.INGAME;
+			return String.format("You are on team %s.\nPress enter to continue", playerColor);
+		} catch (Exception e) {
+			if (e.getMessage().contains("already taken")) { // Adjust this condition based on your actual error handling
+				throw new ResponseException(400, "That spot is already taken. Please choose another color.");
+			}
+			throw new ResponseException(400, "An error occurred while joining the game.");
+		}
 	}
 
     public String observeGame(String... params) throws ResponseException {
