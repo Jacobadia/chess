@@ -20,6 +20,10 @@ public class ChessGame {
 		whichColorTurn = TeamColor.WHITE;
 	}
 
+	public ChessBoard getMyBoard() {
+		return myBoard;
+	}
+
 	/**
 	 * @return Which team's turn it is
 	 */
@@ -35,6 +39,7 @@ public class ChessGame {
 	public void setTeamTurn(TeamColor team) {
 		whichColorTurn = team;
 	}
+
 
 	/**
 	 * Enum identifying the 2 possible teams in a chess game

@@ -107,6 +107,7 @@ public class LogedInClient implements BasicClient {
 		try {
 			server.joinGame(playerColor, gameId, ReplMenu.myAuth);
 			ReplMenu.state = State.INGAME;
+			((GameClient) ReplMenu.gameClient).setGameId(gameId);
 			return String.format("You are on team %s.\nPress enter to continue", playerColor);
 		} catch (Exception e) {
 			if (e.getMessage().contains("already taken")) { // Adjust this condition based on your actual error handling
